@@ -2,7 +2,15 @@
 
 # Source files
 set(SOURCE_FILES
-        acu.cpp)
+        acu.cc
+        aggregation.cc
+        correlation.cc
+        incoming_alert.cc
+        outgoing_alert.cc
+        receiver.cc
+        sender.cc
+        storage.cc
+        threshold.cc)
 
 # Library definition + linking
 add_library(acu ${SOURCE_FILES})

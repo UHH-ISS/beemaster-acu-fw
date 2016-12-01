@@ -5,10 +5,20 @@
 #ifndef ACU_FW_ACU_H
 #define ACU_FW_ACU_H
 
+#include "receiver.h"
+#include "sender.h"
 
-class acu {
+namespace acu {
 
-};
+    class Acu {
+    public:
+        Acu();
+
+    private:
+        Receiver receiver;
+        Sender sender;
+    };
+}
 
 
 #endif //ACU_FW_ACU_H
