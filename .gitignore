@@ -3,3 +3,10 @@
 
 # Ignore CMake build folder
 cmake-build-debug/
+
+# Ignore temp and bin files
+build/
+*.swp
+*.swo
+*.~
+*.bin
