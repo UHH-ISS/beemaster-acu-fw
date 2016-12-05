@@ -19,6 +19,12 @@
 
 find_path(BROKER_ROOT_DIR
     NAMES include/broker/broker.hh
+    # As the broker path might not be added to the default lib search path, we
+    # need to hint to the possible location. [0] states that the use of PATHS is
+    # the way to go.
+    # [0]: https://cmake.org/pipermail/cmake/2010-October/040460.html
+    PATHS /usr/local/bro
+    # /opt/bro/ would also be a valid possibility
 )
 
 find_path(BROKER_INCLUDE_DIR

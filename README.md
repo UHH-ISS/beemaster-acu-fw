@@ -15,15 +15,18 @@ information on how to use it.
 
 ```
 ├── build.sh                    # one-line build tool
+│
 ├── cmake                       # additional cmake files
 │   └── FindBroker.cmake
 ├── CMakeLists.txt              # the cmake build file
+│
 ├── include                     # headers
 │   └── acu
 │       └── *.h
 ├── README.md
 ├── src                         # sources
-│   └── *.cc
+│   ├── *.cc
+│   └── CMakeLists.txt
 └── test                        # test cases
     └── CMakeLists.txt
 ```
