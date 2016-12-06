@@ -5,8 +5,8 @@ MP-IDS ACU Framework
 
 The project is intended to be developed with [CLion][0]. As it shall also be
 possible to build the project without an IDE (i.e. on the command-line), we
-added the [`build.sh`](build.sh) script. Call `./build.sh -h` for more
-information on how to use it.
+added the [`Makefile`](Makefile). Call `make` to build the project inside the
+`build/` directory.
 
 [0]: https://www.jetbrains.com/clion/
 
