@@ -2,8 +2,8 @@
 // Created by florian on 12/1/16.
 //
 
-#ifndef ACU_FW_TRESHOLD_H
-#define ACU_FW_TRESHOLD_H
+#ifndef ACU_FW_THRESHOLD_H
+#define ACU_FW_THRESHOLD_H
 
 #include <string>
 
@@ -21,4 +21,4 @@ namespace acu {
 }
 
 
-#endif //ACU_FW_TRESHOLD_H
+#endif //ACU_FW_THRESHOLD_H
