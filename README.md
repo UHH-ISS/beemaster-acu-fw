@@ -14,7 +14,7 @@ added the [`Makefile`](Makefile). Call `make` to build the project inside the
 
 
 ```
-├── build.sh                    # one-line build tool
+├── Makefile                    # Makefile for 'IDE-less' compilation
 │
 ├── cmake                       # additional cmake files
 │   └── FindBroker.cmake
@@ -28,5 +28,6 @@ added the [`Makefile`](Makefile). Call `make` to build the project inside the
 │   ├── *.cc
 │   └── CMakeLists.txt
 └── test                        # test cases
+    ├── *.cc
     └── CMakeLists.txt
 ```
