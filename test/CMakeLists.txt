@@ -1,3 +1,5 @@
+# CMakeLists.txt for tests
+
 # Source files
 set(SOURCE_FILES
         main.cc
