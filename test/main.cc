@@ -7,3 +7,9 @@
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+
+// This prevents CLion to accidentally optimize out
+// the #include and #define
+TEST_CASE("IGNORE", "IGNORE") {
+    CATCH_CONFIG_MAIN
+}
