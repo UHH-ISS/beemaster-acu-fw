@@ -12,6 +12,14 @@ set(SOURCE_FILES
         storage.cc
         threshold.cc)
 
-# Library definition + linking
-add_library(acu ${SOURCE_FILES})
-target_link_libraries(acu ${LINK_LIBS})
+# Static library definition (.a)
+add_library(acu_static STATIC ${SOURCE_FILES})
+set_target_properties(acu_static PROPERTIES
+        OUTPUT_NAME acu)
+target_link_libraries(acu_static ${LINK_LIBS})
+
+# Shared library definition (.so)
+add_library(acu_shared SHARED ${SOURCE_FILES})
+set_target_properties(acu_shared PROPERTIES
+        OUTPUT_NAME acu)
+target_link_libraries(acu_static ${LINK_LIBS})
