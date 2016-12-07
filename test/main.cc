@@ -3,7 +3,9 @@
 //
 
 // Stub file for catch main function.
-// Write tests in separate source files
+//
+// DO NOT MODIFY THIS FILE!
+// Write tests in separate source files named test_<classname>.cc
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"

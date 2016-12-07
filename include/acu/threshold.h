@@ -14,6 +14,9 @@ namespace acu {
         int count;
         std::string field_name;
         std::string value;
+
+        bool operator==(const Threshold& rhs);
+        bool operator!=(const Threshold& rhs);
     };
 }
 

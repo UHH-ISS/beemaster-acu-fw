@@ -12,7 +12,7 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
 # Define the executable
 add_executable(tests ${SOURCE_FILES})
-target_link_libraries(tests Catch)
+target_link_libraries(tests Catch acu_shared)
 
 # Add tests to CTest
 enable_testing()
