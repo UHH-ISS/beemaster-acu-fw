@@ -20,7 +20,7 @@ include_directories(BEFORE ${BROKER_INCLUDE_DIR})
 set(LINK_LIBS ${LINK_LIBS} ${BROKER_LIBRARY})
 
 # Add our include directory
-include_directories(include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Add sub directories
 add_subdirectory(src)
