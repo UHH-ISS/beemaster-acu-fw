@@ -10,15 +10,26 @@
 namespace acu {
 
     struct Threshold {
-    public:
+        Threshold(int count, std::string field_name, std::string value)
+                : count(count), field_name(field_name), value(value) {}
+
         int count;
         std::string field_name;
         std::string value;
 
-        bool operator==(const Threshold& rhs);
-        bool operator!=(const Threshold& rhs);
+        bool operator==(const Threshold &rhs);
+        bool operator!=(const Threshold &rhs);
     };
-}
+} // namespace acu
+
+namespace std {
+
+    template <> struct hash<acu::Threshold> {
+        inline size_t operator()(const acu::Threshold& t) const {
+            return hash<int>()(t.count) ^ hash<string>()(t.field_name) ^ hash<string>()(t.value);
+        }
+    };
+} // namespace std
 
 
 #endif //ACU_FW_THRESHOLD_H
