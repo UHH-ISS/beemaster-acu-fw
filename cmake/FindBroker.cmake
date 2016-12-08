@@ -29,12 +29,12 @@ find_path(BROKER_ROOT_DIR
 
 find_path(BROKER_INCLUDE_DIR
     NAMES broker/broker.hh
-    HINTS ${BROKER_ROOT_DIR}/include
+    PATHS ${BROKER_ROOT_DIR}/include
 )
 
 find_library(BROKER_LIBRARY
     NAMES broker
-    HINTS ${BROKER_ROOT_DIR}/lib
+    PATHS ${BROKER_ROOT_DIR}/lib
 )
 
 include(FindPackageHandleStandardArgs)
