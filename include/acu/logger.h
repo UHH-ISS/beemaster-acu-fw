@@ -16,10 +16,11 @@ namespace acu {
 
     const static std::string Levels[5];
     public:
-        std::string Name = "";
+        std::string Name;
         // The Enum-Values seem to be exposed (Logger::DEBUG, etc.).
         enum Level { DEBUG, INFO, WARNING, ERROR, CRITICAL };
 
+        Logger() {};
 
         // TODO handle filter levels
         // TODO add variable output (file-output, cerr, ...)
@@ -29,10 +30,12 @@ namespace acu {
         ///                 (most times the class it is used in).
         /// \return         The requested Logger-Instance.
         static Logger GetLogger(const std::string name) {
-            if (Logger::loggers.count(name))
-                return *Logger::loggers[name];
+            if (Logger::loggers.count(name)) {
+                auto logger = Logger::loggers[name];
+                return logger;
+            }
             Logger logger(name);
-            Logger::loggers[name] = &logger;
+            Logger::loggers[name] = logger;
             return logger;
         }
 
@@ -60,8 +63,9 @@ namespace acu {
         template<typename... Args> void Critical(Args... args) { Log(Level::CRITICAL, args...); }
 
     private:
-        Logger(std::string name) { this->Name = name; }
-        typedef std::unordered_map<std::string, Logger*> loggermap_t;
+        Logger(std::string name) : Name(name) {};
+
+        typedef std::unordered_map<std::string, Logger> loggermap_t;
         static loggermap_t loggers;
 
         // Recursive printing of arguments
