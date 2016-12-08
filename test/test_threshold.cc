@@ -5,6 +5,7 @@
 #include "catch.hpp"
 
 #include "acu/threshold.h"
+#include <unordered_set>
 
 TEST_CASE("Testing threshold class layout", "[threshold]") {
     REQUIRE(std::is_copy_assignable<acu::Threshold>());
@@ -19,25 +20,48 @@ TEST_CASE("Testing threshold class layout", "[threshold]") {
 
 TEST_CASE("Testing threshold equality", "[threshold]") {
     // Stack allocation via regular ctor call
-    acu::Threshold val = acu::Threshold();
-    val.count = 2;
-    val.field_name = "field";
-    val.value = "value";
+    acu::Threshold t = acu::Threshold(2, "field", "value");
     // Stack allocation via aggregate initialization syntax
-    acu::Threshold val2 = acu::Threshold{2, "field", "value"};
+    acu::Threshold t2 = acu::Threshold{2, "field", "value"};
     // Heap allocation via `new`
-    acu::Threshold *val3 = new acu::Threshold();
-    val3->count = 2;
-    val3->field_name = "field";
-    val3->value = "value";
+    acu::Threshold *t3 = new acu::Threshold(2, "field", "value");
 
     // Test equality
-    REQUIRE(val == val2);
-    REQUIRE(val == *val3);
-    REQUIRE(val2 == *val3);
+    REQUIRE(t == t2);
+    REQUIRE(t == *t3);
+    REQUIRE(t2 == *t3);
 
     // Test inequality
     auto other = acu::Threshold{2, "test", "123"};
-    REQUIRE_FALSE(val == other);
-    REQUIRE(val != other);
+    REQUIRE_FALSE(t == other);
+    REQUIRE(t != other);
+}
+
+TEST_CASE("Testing threshold hash and set", "[threshold]") {
+    auto set = std::unordered_set<acu::Threshold>();
+
+    // Default set is empty
+    REQUIRE(set.empty());
+    REQUIRE(set.size() == 0);
+
+    auto t1 = acu::Threshold(1, "set", "test");
+    set.insert(t1);
+
+    // Now we should have one item
+    REQUIRE(set.size() == 1);
+
+    auto t2 = acu::Threshold(1, "set", "test");
+    set.insert(t2);
+
+    // t1 == t2 -> the set should still contain only one item
+    REQUIRE(t1 == t2);
+    REQUIRE(set.size() == 1);
+
+    auto t3 = acu::Threshold(2, "sets", "tests");
+    set.insert(t3);
+
+    // t3 != t1/t2 -> the set should contain 2 items
+    REQUIRE(t3 != t1);
+    REQUIRE(t3 != t2);
+    REQUIRE(set.size() == 2);
 }
