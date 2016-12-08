@@ -29,14 +29,12 @@ namespace acu {
         /// \param name     The name of the logger
         ///                 (most times the class it is used in).
         /// \return         The requested Logger-Instance.
-        static Logger GetLogger(const std::string name) {
-            if (Logger::loggers.count(name)) {
-                auto logger = Logger::loggers[name];
-                return logger;
+        static Logger* GetLogger(const std::string name) {
+            if (Logger::loggers.count(name) == 0) {
+                Logger logger(name);
+                Logger::loggers[name] = logger;
             }
-            Logger logger(name);
-            Logger::loggers[name] = logger;
-            return logger;
+            return &Logger::loggers[name];
         }
 
         /// Logs everything to the given loglevel.
