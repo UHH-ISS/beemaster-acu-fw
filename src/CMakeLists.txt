@@ -12,6 +12,10 @@ set(SOURCE_FILES
         storage.cc
         threshold.cc)
 
+# Disable -Wununsed-parameter as broker::get produces this error even when used correctly (I think?!)
+# TODO: Maybe scope this to the source files where broker::get is used? (Currently incoming_alert.cc)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+
 # Static library definition (.a)
 add_library(acu_static STATIC ${SOURCE_FILES})
 set_target_properties(acu_static PROPERTIES
