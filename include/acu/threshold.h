@@ -20,15 +20,15 @@ namespace acu {
         // Value of the field which will be counted
         std::string value;
 
-        bool operator==(const Threshold &rhs) const;
-        bool operator!=(const Threshold &rhs) const;
+        bool operator==(const Threshold&) const;
+        bool operator!=(const Threshold&) const;
     };
 } // namespace acu
 
 namespace std {
 
     template <> struct hash<acu::Threshold> {
-        inline size_t operator()(const acu::Threshold& t) const {
+        inline size_t operator()(const acu::Threshold &t) const {
             return hash<int>()(t.count) ^ hash<string>()(t.field_name) ^ hash<string>()(t.value);
         }
     };
