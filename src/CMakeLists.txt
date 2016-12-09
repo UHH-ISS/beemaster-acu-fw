@@ -22,4 +22,4 @@ target_link_libraries(acu_static ${LINK_LIBS})
 add_library(acu_shared SHARED ${SOURCE_FILES})
 set_target_properties(acu_shared PROPERTIES
         OUTPUT_NAME acu)
-target_link_libraries(acu_static ${LINK_LIBS})
+target_link_libraries(acu_shared ${LINK_LIBS})
