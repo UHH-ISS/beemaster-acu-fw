@@ -14,13 +14,13 @@ namespace acu {
 
     class Logger {
 
-    const static std::string Levels[5];
     public:
-        std::string Name;
-        // The Enum-Values seem to be exposed (Logger::DEBUG, etc.).
-        enum Level { DEBUG, INFO, WARNING, ERROR, CRITICAL };
+        // The Logger's name
+        std::string name;
 
-        Logger() {};
+        // Available log levels
+        // NOTE: The Enum-Values seem to be exposed at class level (Logger::DEBUG, etc.).
+        enum Level { DEBUG, INFO, WARNING, ERROR, CRITICAL };
 
         // TODO handle filter levels
         // TODO add variable output (file-output, cerr, ...)
@@ -31,29 +31,31 @@ namespace acu {
         /// \return         The requested Logger-Instance.
         static Logger* GetLogger(const std::string name) {
             if (Logger::loggers.count(name) == 0) {
-                Logger logger(name);
-                Logger::loggers[name] = logger;
+                // This inserts the Logger in-place and allows us to
+                // not provide a default constructor
+                Logger::loggers.emplace(std::make_pair(name, Logger(name)));
             }
-            return &Logger::loggers[name];
+            // Similarly `at` does not construct the element if it is missing
+            // (it throws instead) and as such works without providing a default constructor
+            return &Logger::loggers.at(name);
         }
 
-        /// Logs everything to the given loglevel.
-        /// \tparam Args
-        /// \param level    The Log::Level to log to.
+        /// Logs the given arguments at the the given log level.
+        /// \param level    The Log::Level to log at.
         /// \param args     The stuff to log.
         template<typename... Args>
         void Log(Level level, Args... args) {
-            // time
-            char strbuff[20];
-            std::time_t tm = std::time(NULL);
-            std::strftime(strbuff, sizeof(strbuff), "%Y-%m-%d %H:%M:%S", std::localtime(&tm));
+            // date/time formatting
+            char strbuf[20];
+            std::time_t tm = std::time(nullptr);
+            std::strftime(strbuf, sizeof(strbuf), Logger::TIME_FORMAT.c_str(), std::localtime(&tm));
 
-            printf("[ %s | %10s | %-8s ] ", strbuff, this->Name.c_str(), Logger::Levels[level].c_str());
+            printf("[ %s | %10s | %-8s ] ", strbuf, this->name.c_str(), Logger::LEVELS[level].c_str());
             RecursiveArgs(args...);
             std::cout << std::endl;
         }
 
-        // Log for the corresponding level.
+        // Log at the corresponding level.
         template<typename... Args> void Debug(Args... args) { Log(Level::DEBUG, args...); }
         template<typename... Args> void Info(Args... args) { Log(Level::INFO, args...); }
         template<typename... Args> void Warn(Args... args) { Log(Level::WARNING, args...); }
@@ -61,13 +63,21 @@ namespace acu {
         template<typename... Args> void Critical(Args... args) { Log(Level::CRITICAL, args...); }
 
     private:
-        Logger(std::string name) : Name(name) {};
+        typedef std::unordered_map<std::string, Logger> LoggerMap;
 
-        typedef std::unordered_map<std::string, Logger> loggermap_t;
-        static loggermap_t loggers;
+        // String representation of the log levels
+        const static std::string LEVELS[5];
+        // Format string for the date/time in the log output
+        const static std::string TIME_FORMAT;
 
-        // Recursive printing of arguments
-        // - http://stackoverflow.com/a/16338804
+        // The available Loggers mapped by their name
+        static LoggerMap loggers;
+
+        // Private constructor prevents creation of Loggers
+        Logger(std::string name) : name(name) {};
+
+        // Utility function to recursively print arguments
+        // See also: http://stackoverflow.com/a/16338804
         template<typename T>
         static void RecursiveArgs(T arg) { std::cout << arg; }
         template<typename T, typename... Args>
@@ -78,8 +88,10 @@ namespace acu {
         }
     };
 
-    const std::string Logger::Levels[] = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"};
-    Logger::loggermap_t Logger::loggers = Logger::loggermap_t();
+    // C++ prevents us from doing this in-class because the expression are not `constexpr`..
+    const std::string Logger::LEVELS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"};
+    const std::string Logger::TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
+    Logger::LoggerMap Logger::loggers = Logger::LoggerMap();
 }
 
 #endif //ACU_FW_LOGGER_H
