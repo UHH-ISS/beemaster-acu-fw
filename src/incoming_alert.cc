@@ -2,6 +2,7 @@
 // Created by florian on 12/1/16.
 //
 
+#include <iostream>
 #include "acu/incoming_alert.h"
 
 namespace acu {
@@ -9,6 +10,7 @@ namespace acu {
     IncomingAlert::IncomingAlert(const broker::message &msg) : message(msg) {
         // We need at least 7 items since we directly index into the message
         assert(msg.size() >= 7);
+        // TODO: We could also "typecheck" the message fields here to fail early?
     }
 
     time_point<system_clock> IncomingAlert::timestamp() {
@@ -39,8 +41,9 @@ namespace acu {
     }
 
     port_t& IncomingAlert::source_port() {
-        assert(broker::is<uint16_t >(message.at(4)));
-        return *broker::get<uint16_t>(message.at(4));
+        // Broker only knows one uint type which translates to uint64_t
+        assert(broker::is<uint64_t >(message.at(4)));
+        return (port_t&)(*broker::get<uint64_t>(message.at(4)));
     }
 
     std::string& IncomingAlert::destination_ip() {
@@ -49,8 +52,8 @@ namespace acu {
     }
 
     port_t& IncomingAlert::destination_port() {
-        assert(broker::is<uint16_t>(message.at(6)));
-        return *broker::get<uint16_t>(message.at(6));
+        assert(broker::is<uint64_t>(message.at(6)));
+        return (port_t&)(*broker::get<uint64_t>(message.at(6)));
     }
 
     bool IncomingAlert::operator==(const IncomingAlert &rhs) const {

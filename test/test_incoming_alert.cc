@@ -8,9 +8,19 @@
 #include "acu/incoming_alert.h"
 
 TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
-    auto msg = broker::message{ "first", "second", "third", "fourth", "fifth", "sixth", "seventh" };
+    auto time_stamp = std::chrono::system_clock::now();
+    auto val = std::chrono::duration_cast<std::chrono::duration<double>>(time_stamp.time_since_epoch());
+    auto broker_stamp = broker::time_point{val.count()};
+
+    // The (uint16_t) casts do not matter but are here for completeness
+    auto msg = broker::message{broker_stamp, "incident", "proto", "127.0.0.1", (uint16_t)8080, "192.168.0.1", (uint16_t)9090};
     auto alert = acu::IncomingAlert(msg);
 
-    // Woohoo indexing.. hopefully this is zero-copy?
-    std::cout << alert.incident_type() << std::endl;
+    REQUIRE(alert.timestamp() == time_stamp);
+    REQUIRE(alert.incident_type() == "incident");
+    REQUIRE(alert.protocol() == "proto");
+    REQUIRE(alert.source_ip() == "127.0.0.1");
+    REQUIRE(alert.source_port() == 8080);
+    REQUIRE(alert.destination_ip() == "192.168.0.1");
+    REQUIRE(alert.destination_port() == 9090);
 }
