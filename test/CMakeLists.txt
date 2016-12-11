@@ -5,7 +5,8 @@ set(SOURCE_FILES
         main.cc
         test_threshold.cc
         test_logger.cc
-        test_outgoingalert.cc)
+        test_outgoingalert.cc
+        test_incoming_alert.cc)
 
 # Add catch (testing library)
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
