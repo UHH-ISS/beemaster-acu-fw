@@ -14,9 +14,9 @@ namespace acu {
     class OutgoingAlert {
     public:
         OutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
-                : name(name), timestamp(timestamp) {};
+                : incidentName(name), timestamp(timestamp) {};
 
-        std::string name;
+        std::string incidentName;
         std::chrono::time_point<std::chrono::system_clock> timestamp;
 
         virtual const broker::message AsMessage();
