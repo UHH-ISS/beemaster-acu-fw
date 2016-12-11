@@ -6,7 +6,7 @@
 
 #include <acu/aggregation.h>
 
-TEST_CASE("Testing aggregation abstract-class layout", "[aggregation]") {
+TEST_CASE("Testing aggregation pure abstract-class layout", "[aggregation]") {
     REQUIRE(std::is_copy_assignable<acu::Aggregation>());
     REQUIRE_FALSE(std::is_copy_constructible<acu::Aggregation>());
 
