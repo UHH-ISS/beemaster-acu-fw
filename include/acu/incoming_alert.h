@@ -10,6 +10,8 @@
 
 #include <broker/message.hh>
 
+#include "utils.h"
+
 namespace acu {
     using namespace std::chrono;
 
@@ -31,13 +33,13 @@ namespace acu {
         // TODO: Change this to port type when utils.h is merged
         // TODO: Also do we want to return &uint16_t here to match the other "fields"?
         // Source port of the connection that triggered this alert
-        uint16_t source_port();
+        port_t source_port();
 
         // Destination IP of the connection that triggered this alert
         std::string& destination_ip();
         // TODO: Change this to port type when utils.h is merged
         // Destination port of the connection that triggered this alert
-        uint16_t destination_port();
+        port_t destination_port();
 
         virtual bool operator==(const IncomingAlert&) const;
         virtual bool operator!=(const IncomingAlert&) const;

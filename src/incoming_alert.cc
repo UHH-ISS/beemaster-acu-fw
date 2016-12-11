@@ -36,7 +36,7 @@ namespace acu {
         return *broker::get<std::string>(message.at(3));
     }
 
-    uint16_t IncomingAlert::source_port() {
+    port_t IncomingAlert::source_port() {
         assert(broker::is<uint16_t >(message.at(4)));
         return *broker::get<uint16_t>(message.at(4));
     }
@@ -46,7 +46,7 @@ namespace acu {
         return *broker::get<std::string>(message.at(5));
     }
 
-    uint16_t IncomingAlert::destination_port() {
+    port_t IncomingAlert::destination_port() {
         assert(broker::is<uint16_t>(message.at(6)));
         return *broker::get<uint16_t>(message.at(6));
     }
