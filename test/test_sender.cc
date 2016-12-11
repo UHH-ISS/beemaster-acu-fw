@@ -63,6 +63,7 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     REQUIRE(mockAlert->ToMessageCalled());
     REQUIRE(success);
 
+    // the non-blocking is wanted here. test should break if nothing is there instead of waiting forever.
     for (auto& msg : queue.want_pop()) {
         REQUIRE(msg.at(0) == alertTime.time_since_epoch().count());
         REQUIRE(msg.at(1) == alertName);
