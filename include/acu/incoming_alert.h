@@ -30,25 +30,19 @@ namespace acu {
 
         // Source IP of the connection that triggered this alert
         std::string& source_ip();
-        // TODO: Change this to port type when utils.h is merged
-        // TODO: Also do we want to return &uint16_t here to match the other "fields"?
         // Source port of the connection that triggered this alert
-        port_t source_port();
+        port_t& source_port();
 
         // Destination IP of the connection that triggered this alert
         std::string& destination_ip();
-        // TODO: Change this to port type when utils.h is merged
         // Destination port of the connection that triggered this alert
-        port_t destination_port();
+        port_t& destination_port();
 
         virtual bool operator==(const IncomingAlert&) const;
         virtual bool operator!=(const IncomingAlert&) const;
 
     protected:
         std::vector<broker::data> message;
-
-    private:
-        IncomingAlert() {};
     };
 } // namespace acu
 
