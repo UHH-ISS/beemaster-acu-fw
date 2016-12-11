@@ -12,8 +12,17 @@
 
 // Provides a mock implementation for OutgoingAlert
 class MockOutgoingAlert : public acu::OutgoingAlert {
-    public: MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
-                : acu::OutgoingAlert(name, timestamp) {};
+    public:
+        MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
+                : acu::OutgoingAlert(name, timestamp), called(false) {};
+        bool called;
+        const broker::message ToMessage() {
+            this->called = true;
+            return acu::OutgoingAlert::ToMessage();
+        }
+        bool ToMessageCalled() {
+            return this->called;
+        }
 };
 
 
@@ -41,7 +50,7 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     auto alertTime = std::chrono::system_clock::now();
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(alertName, alertTime);
 
-    // broker mock
+    // remote bro-broker "mock" via localhost
     broker::init();
     broker::endpoint rec_ep("Receiver Endpoint");
     bool listening = rec_ep.listen(local_port, local_ip.c_str());
@@ -51,7 +60,7 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     // do test
     sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
     bool success = sender->Send(mockAlert);
-
+    REQUIRE(mockAlert->ToMessageCalled());
     REQUIRE(success);
 
     for (auto& msg : queue.want_pop()) {
@@ -75,5 +84,7 @@ TEST_CASE("Testing sender send failure", "[sender]") {
     // do test
     bool success = sender->Send(mockAlert);
 
+    // not sent? -> should not have been converted!
+    REQUIRE_FALSE(mockAlert->ToMessageCalled());
     REQUIRE_FALSE(success);
 }
