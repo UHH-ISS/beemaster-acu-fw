@@ -7,6 +7,15 @@
 #include <broker/endpoint.hh>
 #include <broker/message_queue.hh>
 #include <broker/broker.hh>
+#include <iostream>
+#include <unistd.h>
+
+// Provides a mock implementation for OutgoingAlert
+class MockOutgoingAlert : public acu::OutgoingAlert {
+    public: MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
+                : acu::OutgoingAlert(name, timestamp) {};
+};
+
 
 TEST_CASE("Testing sender class layout", "[sender]") {
     REQUIRE(std::is_copy_assignable<acu::Sender>());
@@ -28,12 +37,6 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
 
     REQUIRE(sender != NULL);
 
-    // mock
-    class MockOutgoingAlert : public acu::OutgoingAlert {
-    public: MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
-            : acu::OutgoingAlert(name, timestamp) {};
-    };
-
     auto alertName = "MyAlert";
     auto alertTime = std::chrono::system_clock::now();
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(alertName, alertTime);
@@ -46,10 +49,31 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     broker::message_queue queue(alertName, rec_ep);
 
     // do test
-    sender->Send(mockAlert);
+    sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
+    bool success = sender->Send(mockAlert);
 
-    for (auto& msg : queue.need_pop()) {
+    REQUIRE(success);
+
+    for (auto& msg : queue.want_pop()) {
         REQUIRE(msg.at(0) == alertTime.time_since_epoch().count());
         REQUIRE(msg.at(1) == alertName);
     }
+}
+
+TEST_CASE("Testing sender send failure", "[sender]") {
+    // setup
+    std::string local_ip = "127.0.0.1";
+    std::uint16_t local_port = 9999;
+
+    acu::Sender *sender = new acu::Sender(local_ip, local_port);
+
+    REQUIRE(sender != NULL);
+
+    auto alertTime = std::chrono::system_clock::now();
+    MockOutgoingAlert *mockAlert = new MockOutgoingAlert("MyAlert", alertTime);
+
+    // do test
+    bool success = sender->Send(mockAlert);
+
+    REQUIRE_FALSE(success);
 }

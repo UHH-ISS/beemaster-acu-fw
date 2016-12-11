@@ -19,7 +19,7 @@ namespace acu {
         std::string destination;
         uint16_t port;
 
-        void Send(OutgoingAlert *alert);
+        bool Send(OutgoingAlert *alert);
     };
 }
 
