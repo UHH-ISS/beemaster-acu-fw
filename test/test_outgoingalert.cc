@@ -27,6 +27,6 @@ TEST_CASE("Testing OutgoingAlert AsVector default behavior", "[outgoing_alert]")
 
     auto msg = alert->AsMessage();
 
-    REQUIRE(msg[0].value == alert->name);
-    REQUIRE(msg[1].value == alert->timestamp.time_since_epoch().count());
+    REQUIRE(msg[0].value == alert->timestamp.time_since_epoch().count());
+    REQUIRE(msg[1].value == alert->name);
 }
