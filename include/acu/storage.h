@@ -11,6 +11,12 @@ namespace acu {
 
     class Storage {
     public:
+        Storage(std::string db_name)
+        : db_name(db_name) {}
+
+        std::string db_name;
+        // TODO: add more DB properties
+
         virtual void Persist(IncomingAlert alert) = 0;
     };
 }
