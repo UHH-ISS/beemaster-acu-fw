@@ -1,9 +1,12 @@
 //
-// Created by florian on 12/1/16.
+// OutgoingAlert is the basic abstract class for "meta-alerts" sent back from the ACU framework to the Bro-Master.
 //
 
 #include "acu/outgoing_alert.h"
 
-broker::vector acu::OutgoingAlert::AsVector() {
-    return broker::vector();
+namespace acu {
+
+    const broker::message OutgoingAlert::ToMessage() {
+        return broker::message{this->timestamp.time_since_epoch().count(), this->incidentName};
+    }
 }

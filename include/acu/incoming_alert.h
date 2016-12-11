@@ -8,25 +8,42 @@
 #include <chrono>
 #include <string>
 
-#include <broker/data.hh>
+#include <broker/message.hh>
+
+#include "utils.h"
 
 namespace acu {
+    using namespace std::chrono;
 
     class IncomingAlert {
     public:
-        std::string topic;
-        std::chrono::time_point<std::chrono::system_clock> timestamp;
+        explicit IncomingAlert(const broker::message&);
 
-        std::string incident_type;
-        std::string protocol;
+        // Timestamp indicating when the alert occurred
+        time_point<system_clock> timestamp();
 
-        std::string source_ip;
-        uint16_t source_port;
+        // Incident type (free text)
+        std::string& incident_type();
+        // Protocol of the incident
+        //TODO: Is this tcp/udp or ftp/http/etc?
+        std::string& protocol();
 
-        std::string destination_ip;
-        uint16_t destination_port;
+        // Source IP of the connection that triggered this alert
+        std::string& source_ip();
+        // Source port of the connection that triggered this alert
+        port_t& source_port();
+
+        // Destination IP of the connection that triggered this alert
+        std::string& destination_ip();
+        // Destination port of the connection that triggered this alert
+        port_t& destination_port();
+
+        virtual bool operator==(const IncomingAlert&) const;
+        virtual bool operator!=(const IncomingAlert&) const;
+
+    protected:
+        std::vector<broker::data> message;
     };
-}
-
+} // namespace acu
 
 #endif //ACU_FW_INCOMING_ALERT_H

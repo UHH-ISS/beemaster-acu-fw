@@ -7,16 +7,19 @@
 
 #include <chrono>
 #include <string>
-#include <broker/data.hh>
+#include <broker/message.hh>
 
 namespace acu {
 
     class OutgoingAlert {
     public:
-        std::string name;
+        OutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
+                : incidentName(name), timestamp(timestamp) {};
+
+        std::string incidentName;
         std::chrono::time_point<std::chrono::system_clock> timestamp;
 
-        virtual broker::vector AsVector();
+        virtual const broker::message ToMessage();
     };
 }
 
