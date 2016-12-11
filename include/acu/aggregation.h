@@ -13,13 +13,13 @@ namespace acu {
 
     class Aggregation{
     public:
-        Aggregation(Storage* storage, Threshold** thresholds)
+        Aggregation(Storage *storage, Threshold *thresholds[])
             : storage(storage), thresholds(thresholds) {};
 
-        Storage* storage;
-        Threshold** thresholds;
+        Storage *storage;
+        Threshold **thresholds;
 
-        virtual void Invoke(IncomingAlert* alert) = 0;
+        virtual void Invoke(IncomingAlert *alert) = 0;
     };
 }
 
