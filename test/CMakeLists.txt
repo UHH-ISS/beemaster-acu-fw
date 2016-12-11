@@ -7,7 +7,7 @@ set(SOURCE_FILES
         test_aggregation.cc
         test_logger.cc
         test_outgoingalert.cc
-        test_incoming_alert.cc)
+        test_incoming_alert.cc test_correlation.cc)
 
 # Add catch (testing library)
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)

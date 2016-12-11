@@ -5,11 +5,19 @@
 #ifndef ACU_FW_CORRELATION_H
 #define ACU_FW_CORRELATION_H
 
+#include "threshold.h"
+#include "storage.h"
+
 namespace acu {
 
     class Correlation {
     public:
-        Correlation();
+        Correlation(Storage *storage, Threshold *thresholds[], std::string *topics[])
+                : storage(storage), thresholds(thresholds), topics(topics) {};
+
+        Storage *storage;
+        Threshold **thresholds;
+        std::string **topics;
 
         virtual void Invoke() = 0;
     };
