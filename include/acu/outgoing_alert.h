@@ -19,7 +19,7 @@ namespace acu {
         std::string incidentName;
         std::chrono::time_point<std::chrono::system_clock> timestamp;
 
-        virtual const broker::message AsMessage();
+        virtual const broker::message ToMessage();
     };
 }
 

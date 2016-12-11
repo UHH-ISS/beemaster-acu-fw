@@ -18,14 +18,14 @@ TEST_CASE("Testing OutgoingAlert class layout", "[outgoing_alert]") {
     REQUIRE_FALSE(std::is_pod<acu::OutgoingAlert>());
 }
 
-TEST_CASE("Testing OutgoingAlert AsMessage default behavior", "[outgoing_alert]") {
+TEST_CASE("Testing OutgoingAlert ToMessage default behavior", "[outgoing_alert]") {
     auto now = std::chrono::system_clock::now();
     acu::OutgoingAlert* alert = new acu::OutgoingAlert("BAM", now);
 
     REQUIRE(alert->incidentName == "BAM");
     REQUIRE(alert->timestamp == now);
 
-    auto msg = alert->AsMessage();
+    auto msg = alert->ToMessage();
 
     REQUIRE(msg[0].value == alert->timestamp.time_since_epoch().count());
     REQUIRE(msg[1].value == alert->incidentName);
