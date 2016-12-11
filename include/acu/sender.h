@@ -13,9 +13,13 @@ namespace acu {
 
     class Sender {
     public:
-        Sender(std::string destination, uint16_t port);
+        Sender(std::string destination, uint16_t port)
+            : destination(destination), port(port) {} ;
 
-        void Send(OutgoingAlert alert);
+        std::string destination;
+        uint16_t port;
+
+        void Send(OutgoingAlert *alert);
     };
 }
 
