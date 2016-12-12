@@ -5,9 +5,9 @@
 #ifndef ACU_FW_AGGREGATIONALGORITHM_H
 #define ACU_FW_AGGREGATIONALGORITHM_H
 
-#include "threshold.h"
 #include "incoming_alert.h"
 #include "storage.h"
+#include "threshold.h"
 
 namespace acu {
 
