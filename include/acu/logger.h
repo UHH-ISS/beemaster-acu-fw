@@ -33,11 +33,11 @@ namespace acu {
             if (Logger::loggers.count(name) == 0) {
                 // This inserts the Logger in-place and allows us to
                 // not provide a default constructor
-                Logger::loggers.emplace(std::make_pair(name, Logger(name)));
+                Logger::loggers.emplace(std::make_pair(name, new Logger(name)));
             }
             // Similarly `at` does not construct the element if it is missing
             // (it throws instead) and as such works without providing a default constructor
-            return &Logger::loggers.at(name);
+            return Logger::loggers.at(name);
         }
 
         /// Logs the given arguments at the the given log level.
@@ -63,7 +63,7 @@ namespace acu {
         template<typename... Args> void Critical(Args... args) { Log(Level::CRITICAL, args...); }
 
     private:
-        typedef std::unordered_map<std::string, Logger> LoggerMap;
+        typedef std::unordered_map<std::string, Logger*> LoggerMap;
 
         // String representation of the log levels
         const static std::string LEVELS[5];
@@ -92,6 +92,7 @@ namespace acu {
     const std::string Logger::LEVELS[] = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"};
     const std::string Logger::TIME_FORMAT = "%Y-%m-%d %H:%M:%S";
     Logger::LoggerMap Logger::loggers = Logger::LoggerMap();
+
 }
 
 #endif //ACU_FW_LOGGER_H
