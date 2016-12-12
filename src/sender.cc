@@ -8,7 +8,9 @@
 #include "broker/endpoint.hh"
 
 namespace acu {
+    // This could also be set via config file?
     std::string const ENDPOINT_NAME = "ACU Sender";
+
     using namespace broker;
 
     bool Sender::Send(OutgoingAlert *alert) {
@@ -17,9 +19,9 @@ namespace acu {
 
         // default retry interval is 5 seconds. Maybe we want to change that?
         peering success = ep.peer(this->destination, this->port);
-        if ( !success | (ep.outgoing_connection_status().want_pop().front().status !=
-             outgoing_connection_status::tag::established)) {
-            log->Warn("Sender: Error peering with", this->destination, this->port);
+        if (!success || ep.outgoing_connection_status().want_pop().front().status
+                        != outgoing_connection_status::tag::established) {
+            log->Warn("Sender: Error peering with ", this->destination, this->port);
             return false;
         }
 
