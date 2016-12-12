@@ -43,49 +43,40 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     std::uint16_t local_port = 9999;
 
     acu::Sender *sender = new acu::Sender(local_ip, local_port);
-
-    REQUIRE(sender != NULL);
+    REQUIRE(sender != nullptr);
 
     auto alertName = "MyAlert";
     auto alertTime = std::chrono::system_clock::now();
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(alertName, alertTime);
+    REQUIRE(mockAlert != nullptr);
 
-    // remote bro-broker "mock" via localhost
-    broker::init();
-    broker::endpoint rec_ep("Receiver Endpoint");
-    bool listening = rec_ep.listen(local_port, local_ip.c_str());
-    REQUIRE(listening);
-    broker::message_queue queue(alertName, rec_ep);
+    SECTION("Testing successful send") {
+        // remote bro-broker "mock" via localhost
+        broker::init();
+        broker::endpoint rec_ep("Receiver Endpoint");
+        bool listening = rec_ep.listen(local_port, local_ip.c_str());
+        REQUIRE(listening);
+        broker::message_queue queue(alertName, rec_ep);
 
-    // do test
-    sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
-    bool success = sender->Send(mockAlert);
-    REQUIRE(mockAlert->ToMessageCalled());
-    REQUIRE(success);
+        // do test
+        sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
+        bool success = sender->Send(mockAlert);
+        REQUIRE(mockAlert->ToMessageCalled());
+        REQUIRE(success);
 
-    // the non-blocking is wanted here. test should break if nothing is there instead of waiting forever.
-    for (auto& msg : queue.want_pop()) {
-        REQUIRE(msg.at(0) == alertTime.time_since_epoch().count());
-        REQUIRE(msg.at(1) == alertName);
+        // the non-blocking is wanted here. test should break if nothing is there instead of waiting forever.
+        for (auto &msg : queue.want_pop()) {
+            REQUIRE(msg.at(0) == alertTime.time_since_epoch().count());
+            REQUIRE(msg.at(1) == alertName);
+        }
     }
-}
 
-TEST_CASE("Testing sender send failure", "[sender]") {
-    // setup
-    std::string local_ip = "127.0.0.1";
-    std::uint16_t local_port = 9999;
+    SECTION("Testing sending without peering") {
+        // do test
+        bool success = sender->Send(mockAlert);
 
-    acu::Sender *sender = new acu::Sender(local_ip, local_port);
-
-    REQUIRE(sender != NULL);
-
-    auto alertTime = std::chrono::system_clock::now();
-    MockOutgoingAlert *mockAlert = new MockOutgoingAlert("MyAlert", alertTime);
-
-    // do test
-    bool success = sender->Send(mockAlert);
-
-    // not sent? -> should not have been converted!
-    REQUIRE_FALSE(mockAlert->ToMessageCalled());
-    REQUIRE_FALSE(success);
+        // not sent? -> should not have been converted!
+        REQUIRE_FALSE(mockAlert->ToMessageCalled());
+        REQUIRE_FALSE(success);
+    }
 }
