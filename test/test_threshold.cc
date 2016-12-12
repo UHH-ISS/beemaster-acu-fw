@@ -26,6 +26,8 @@ TEST_CASE("Testing threshold equality", "[threshold]") {
     // Heap allocation via `new`
     acu::Threshold *t3 = new acu::Threshold(2, "field", "value");
 
+    REQUIRE(t3 != nullptr);
+
     // Test equality
     REQUIRE(t == t2);
     REQUIRE(t == *t3);

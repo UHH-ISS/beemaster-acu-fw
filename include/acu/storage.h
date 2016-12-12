@@ -5,14 +5,13 @@
 #ifndef ACU_FW_STORAGE_H
 #define ACU_FW_STORAGE_H
 
-#include "acu/incoming_alert.h"
+#include "incoming_alert.h"
 
 namespace acu {
 
     class Storage {
     public:
-        Storage(std::string db_name)
-        : db_name(db_name) {}
+        Storage(std::string db_name) : db_name(db_name) {}
 
         std::string db_name;
         // TODO: add more DB properties

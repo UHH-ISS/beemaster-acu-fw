@@ -5,15 +5,14 @@
 #ifndef ACU_FW_LOGGER_H
 #define ACU_FW_LOGGER_H
 
+#include <ctime>
+#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
-#include <ctime>
 
 namespace acu {
 
     class Logger {
-
     public:
         // The Logger's name
         std::string name;

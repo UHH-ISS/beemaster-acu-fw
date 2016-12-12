@@ -8,12 +8,12 @@ TEST_CASE("Testing Logger::GetLogger", "[logger]") {
     auto name = "test";
     auto logger = Logger::GetLogger(name);
 
-    REQUIRE( logger->name == name );
+    REQUIRE(logger->name == name);
 
     auto logger2 = Logger::GetLogger(name);
 
-    REQUIRE( logger->name == logger2->name );
-    REQUIRE( logger == logger2 );
+    REQUIRE(logger->name == logger2->name);
+    REQUIRE(logger == logger2);
 
     // This is here to prevent accidental deletion of
     // Logger::RecursiveArgs(T arg, Args... args) as it is marked unused
