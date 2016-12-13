@@ -8,6 +8,7 @@ set(SOURCE_FILES
         test_incoming_alert.cc
         test_logger.cc
         test_outgoingalert.cc
+        test_storage.cc
         test_threshold.cc)
 
 # Add catch (testing library)
