@@ -16,4 +16,3 @@ namespace acu {
         return !(*this == rhs);
     }
 }
-
