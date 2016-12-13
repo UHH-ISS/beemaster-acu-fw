@@ -5,8 +5,8 @@
 #ifndef ACU_FW_CORRELATION_H
 #define ACU_FW_CORRELATION_H
 
-#include "threshold.h"
 #include "storage.h"
+#include "threshold.h"
 
 namespace acu {
 
