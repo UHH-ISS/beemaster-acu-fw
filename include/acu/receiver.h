@@ -8,14 +8,27 @@
 #include <cstdint>
 #include <string>
 
+#include <broker/endpoint.hh>
+
+#include "acu/utils.h"
+
 namespace acu {
 
     class Receiver {
     public:
-        Receiver(std::string address, uint16_t port, std::string topics[]);
+        /// Initialise a new Receiver.
+        ///
+        /// \param address  The address to listen on.
+        /// \param port     The port to listen on.
+        /// \param topics   The topics to subscribe to.
+        Receiver(std::string address, port_t port, std::string topics[]);
 
         void Listen();
+    private:
+        broker::endpoint* endpoints[];
     };
+
+    const static std::string ENDPOINT_PREFIX = "acu_receiver";
 }
 
 
