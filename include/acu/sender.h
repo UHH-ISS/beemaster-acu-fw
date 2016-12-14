@@ -6,6 +6,7 @@
 #define ACU_FW_SENDER_H
 
 #include "outgoing_alert.h"
+#include "utils.h"
 
 #include <string>
 
@@ -13,9 +14,13 @@ namespace acu {
 
     class Sender {
     public:
-        Sender(std::string destination, uint16_t port);
+        Sender(std::string destination, port_t port)
+            : destination(destination), port(port) {} ;
 
-        void Send(OutgoingAlert alert);
+        std::string destination;
+        port_t port;
+
+        bool Send(OutgoingAlert *alert);
     };
 }
 
