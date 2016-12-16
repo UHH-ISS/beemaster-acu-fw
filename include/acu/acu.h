@@ -24,6 +24,8 @@ namespace acu {
         /// @param correlation  The Correlation to register on those topics.
         void Register(std::vector<std::string> *topics, Aggregation *aggregation, Correlation *correlation);
 
+        void Run();
+
     private:
         Receiver *receiver;
         Sender *sender;
