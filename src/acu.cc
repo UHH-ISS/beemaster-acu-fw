@@ -25,9 +25,9 @@ namespace acu {
         receiver = new Receiver("127.0.0.1", 9999, topics);
         sender = new Sender("127.0.0.1", 9998);
 
-        
+
 
         // TODO: RUN
-        receiver->Listen();
+        receiver->Listen(nullptr);
     }
 }
