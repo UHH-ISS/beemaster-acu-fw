@@ -7,6 +7,6 @@
 namespace acu {
 
     const broker::message OutgoingAlert::ToMessage() {
-        return broker::message{this->timestamp.time_since_epoch().count(), this->incidentName};
+        return broker::message{timestamp.time_since_epoch().count(), incidentName};
     }
 }

@@ -19,7 +19,7 @@ namespace acu {
         endpoint ep(ENDPOINT_NAME);
 
         // default retry interval is 5 seconds. Maybe we want to change that?
-        peering success = ep.peer(this->destination, this->port);
+        peering success = ep.peer(destination, port);
         if (!success || ep.outgoing_connection_status().want_pop().front().status
                         != outgoing_connection_status::tag::established) {
             return false;
