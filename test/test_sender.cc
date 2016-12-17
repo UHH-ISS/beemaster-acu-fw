@@ -54,14 +54,15 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
         REQUIRE(sender != nullptr);
 
         // wait on this site with the mocked receiver:
-        rec_ep.incoming_connection_status().need_pop();
+        REQUIRE(rec_ep.incoming_connection_status().need_pop().front().status
+                == broker::incoming_connection_status::tag::established);
 
         broker::message_queue queue(alertName, rec_ep);
 
         // do test
         bool success = sender->Send(mockAlert);
-        REQUIRE(mockAlert->ToMessageCalled());
         REQUIRE(success);
+        REQUIRE(mockAlert->ToMessageCalled());
 
         // the non-blocking is wanted here. test should break if nothing is there instead of waiting forever.
         for (auto &msg : queue.want_pop()) {
