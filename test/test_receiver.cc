@@ -10,7 +10,14 @@
 #include <iostream>
 
 TEST_CASE("Testing Receiver class layout", "[receiver]") {
+    REQUIRE(std::is_copy_assignable<acu::Receiver>());
+    REQUIRE(std::is_copy_constructible<acu::Receiver>());
 
+    REQUIRE(std::is_move_assignable<acu::Receiver>());
+    REQUIRE(std::is_move_constructible<acu::Receiver>());
+
+    REQUIRE(std::is_standard_layout<acu::Receiver>());
+    REQUIRE_FALSE(std::is_pod<acu::Receiver>());
 }
 
 TEST_CASE("Testing Receiver receive", "[receiver]") {
