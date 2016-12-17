@@ -32,11 +32,10 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
     SECTION("Testing Receiver receive single queue success") {
 
-        // clear "called"
-        called = std::map<std::string, broker::message>();
+        REQUIRE(called.size() == 0);
 
         rec.Listen(cb);
-        usleep(500);
+        usleep(500 * 1000);
 
         auto msg = broker::message{"testmessage"};
         auto sender = broker::endpoint("sender");
@@ -47,7 +46,7 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
         //sender.advertise(topics[0]);
         sender.send(topics[0], msg);
-        usleep(300);
+        usleep(500 * 1000);
 
         REQUIRE(called.count(topics[0]));
         REQUIRE(called.at(topics[0]) == msg);
@@ -55,11 +54,10 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
     SECTION("Testing Receiver receive multiple queues success") {
 
-        // clear "called"
-        called = std::map<std::string, broker::message>();
+        REQUIRE(called.size() == 0);
 
         rec.Listen(cb);
-        usleep(500);
+        usleep(500 * 1000);
 
         auto msg1 = broker::message{"msg1"};
         auto msg2 = broker::message{"msg2"};
@@ -74,7 +72,8 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         sender.send(topics[0], msg1);
         sender.send(topics[1], msg2);
         sender.send(topics[2], msg3);
-        usleep(300);
+
+        usleep(500 * 1000);
 
         REQUIRE(called.count(topics[0]));
         REQUIRE(called.count(topics[1]));
