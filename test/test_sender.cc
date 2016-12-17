@@ -40,7 +40,7 @@ TEST_CASE("Testing sender class layout", "[sender]") {
 TEST_CASE("Testing sender send functionality", "[sender]") {
     // setup
     std::string local_ip = "127.0.0.1";
-    std::uint16_t local_port = 9999;
+    acu::port_t local_port = 9999;
 
     acu::Sender *sender = new acu::Sender(local_ip, local_port);
     REQUIRE(sender != nullptr);
@@ -48,18 +48,18 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     auto alertName = "MyAlert";
     auto alertTime = std::chrono::system_clock::now();
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(alertName, alertTime);
-    REQUIRE(mockAlert != nullptr);
+    REQUIRE_FALSE(mockAlert->ToMessageCalled());
 
     SECTION("Testing successful send") {
         // remote bro-broker "mock" via localhost
         broker::init();
         broker::endpoint rec_ep("Receiver Endpoint");
-        bool listening = rec_ep.listen(local_port, local_ip.c_str());
-        REQUIRE(listening);
+        rec_ep.listen(local_port, local_ip.c_str());
+        usleep(100 * 1000); // listen may take a while
+
         broker::message_queue queue(alertName, rec_ep);
 
         // do test
-        sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
         bool success = sender->Send(mockAlert);
         REQUIRE(mockAlert->ToMessageCalled());
         REQUIRE(success);
@@ -72,11 +72,14 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     }
 
     SECTION("Testing sending without peering") {
+
+        // provide invalid address...
+        sender = new acu::Sender(local_ip, 1234);
         // do test
         bool success = sender->Send(mockAlert);
 
         // not sent? -> should not have been converted!
-        REQUIRE_FALSE(mockAlert->ToMessageCalled());
         REQUIRE_FALSE(success);
+        REQUIRE_FALSE(mockAlert->ToMessageCalled());
     }
 }
