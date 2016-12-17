@@ -1,6 +1,6 @@
-//
-// Created by florian on 12/1/16.
-//
+/*
+ * The ACU Receiver offers to fork and detach an asynchronous receiving broker endpoint.
+ */
 
 #include "acu/receiver.h"
 
@@ -11,11 +11,15 @@
 
 namespace acu {
 
+    // This could also be set via config file?
+    std::string const ENDPOINT_NAME = "ACU Receiver";
+
+
     void DoListen(std::string address, port_t port,
                   std::vector<std::string> *topics,
                   std::function<void(const std::string, const broker::message&)> callback) {
 
-        auto endpoint = new broker::endpoint("recv_endpoint", broker::AUTO_ADVERTISE);
+        auto endpoint = new broker::endpoint(ENDPOINT_NAME, broker::AUTO_ADVERTISE);
         if (!endpoint->listen(port, address.c_str())) {
             //TODO: report error?
             return;
@@ -26,49 +30,34 @@ namespace acu {
             queues->push_back(new broker::message_queue(topic, *endpoint, broker::LOCAL_SCOPE));
         }
 
-        for (;;) {
-            for (auto &q : *queues) {
-                for (auto &msg : q->want_pop()) {
-                    std::cout << "halleluJAH" << std::endl;
-                    callback(q->get_topic_prefix(), msg);
-                    return;
-                }
-            }
-        }
-
-        /*fd_set fds;
+        fd_set fds;
         for (;;) {
             // Init fds
             FD_ZERO(&fds);
             for (auto q : *queues) {
                 FD_SET(q->fd(), &fds);
             }
-
-            std::cout << "calling select" << std::endl;
             // Block until at least one queue is ready to read
-            auto result = select((int)(queues->size() + 1), &fds, nullptr, nullptr, nullptr);
+            auto result = select(FD_SETSIZE, &fds, nullptr, nullptr, nullptr);
             if (result == -1) {
                 //TODO: Report error?
                 return;
             }
-            std::cout << "called select" << std::endl;
 
             // Find readable queues
             for (auto &q : *queues) {
                 if (FD_ISSET(q->fd(), &fds)) {
                     for (auto &msg : q->want_pop()) {
-                        std::cout << "calling callback" << std::endl;
                         callback(q->get_topic_prefix(), msg);
                     }
                 }
             }
-        }*/
+        }
     }
 
     void Receiver::Listen(std::function<void(const std::string, const broker::message &)> callback) {
-        std::cout << "pre" << std::endl;
+        // Fork an asynchronous receiver, return control flow / execution to caller:
         std::thread(DoListen, address, port, topics, callback).detach();
-        std::cout << "post" << std::endl;
         return;
     }
 }
