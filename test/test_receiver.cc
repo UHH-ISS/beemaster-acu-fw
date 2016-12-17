@@ -33,12 +33,13 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
     auto called = std::map<std::string, broker::message>();
     auto cb = [&](const std::string topic, const broker::message &msg) {
-        std::cout << "called callback in test for topic " + topic << std::endl;
+        std::cout << "Test receiver: callback on receive triggered, " + topic << std::endl;
         called.emplace(topic, msg);
     };
 
     SECTION("Testing Receiver receive single queue success") {
-
+        // Receiver was created with 3 known topics, so 3 queues are registered.
+        // One queue will receive, that must result in triggering this tests callback exactly once
         REQUIRE(called.size() == 0);
 
         rec.Listen(cb);
@@ -56,11 +57,15 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         usleep(500 * 1000);
 
         REQUIRE(called.count(topics[0]));
+        REQUIRE_FALSE(called.count(topics[1]));
+        REQUIRE_FALSE(called.count(topics[2]));
         REQUIRE(called.at(topics[0]) == msg);
     }
 
     SECTION("Testing Receiver receive multiple queues success") {
-
+        // Receiver was created with 3 known topics, so 3 queues are registered.
+        // All 3 queue swill receive, that must result in triggering this tests callback
+        // exactly 3 times with three different messages.
         REQUIRE(called.size() == 0);
 
         rec.Listen(cb);
@@ -75,7 +80,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         auto status = sender.outgoing_connection_status().need_pop().front().status;
         REQUIRE(status == broker::outgoing_connection_status::tag::established);
 
-        //sender.advertise(topics[0]);
         sender.send(topics[0], msg1);
         sender.send(topics[1], msg2);
         sender.send(topics[2], msg3);
