@@ -62,7 +62,7 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
                 == broker::incoming_connection_status::tag::established);
 
         // do test
-        usleep(1000);
+        usleep(100 * 1000);
         bool success = sender->Send(mockAlert);
         REQUIRE(success);
         REQUIRE(mockAlert->ToMessageCalled());
