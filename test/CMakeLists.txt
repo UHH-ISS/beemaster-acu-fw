@@ -11,7 +11,8 @@ set(SOURCE_FILES
         test_receiver.cc
         test_sender.cc
         test_storage.cc
-        test_threshold.cc)
+        test_threshold.cc
+        test_acu.cc)
 
 # Add catch (testing library)
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)

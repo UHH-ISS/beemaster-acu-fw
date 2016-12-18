@@ -22,6 +22,7 @@ namespace acu {
             topics->push_back(pair.first);
         }
 
+        // TODO: config?
         receiver = new Receiver("127.0.0.1", 9999, topics);
         sender = new Sender("127.0.0.1", 9998);
 
