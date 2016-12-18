@@ -9,18 +9,17 @@
 #include "utils.h"
 
 #include <string>
+#include <broker/endpoint.hh>
 
 namespace acu {
 
     class Sender {
     public:
-        Sender(std::string destination, port_t port)
-            : destination(destination), port(port) {} ;
-
-        std::string destination;
-        port_t port;
-
+        Sender(std::string destination, port_t port);
         bool Send(OutgoingAlert *alert);
+
+    private:
+        broker::endpoint *endpoint;
     };
 }
 
