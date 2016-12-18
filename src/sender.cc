@@ -1,32 +1,32 @@
-//
-// Sends data via broker to given destination + port.
-//
+/*
+ * Sends data via broker to given destination + port.
+ */
 
 #include <broker/broker.hh>
+#include <iostream>
 #include "acu/sender.h"
-#include "broker/endpoint.hh"
 
 namespace acu {
     // This could also be set via config file?
     std::string const ENDPOINT_NAME = "ACU Sender";
 
-    using namespace broker;
+    Sender::Sender(std::string destination, port_t port) :
+            endpoint(new broker::endpoint(ENDPOINT_NAME)) {
+
+        // default retry interval is 5 seconds. Maybe we want to change that?
+        endpoint->peer(destination, port);
+    }
 
     bool Sender::Send(OutgoingAlert *alert) {
 
-        // TBD ob ein einmaliges peering im konstruktor sinnvoller wäre.
-        // das hier ist erstmal die "safe" variante, mit der wir starten können.
-        endpoint ep(ENDPOINT_NAME);
+        auto conn_stati = endpoint->outgoing_connection_status().want_pop();
+        if (conn_stati.size() == 0
+            || conn_stati.front().status != broker::outgoing_connection_status::tag::established) {
 
-        // default retry interval is 5 seconds. Maybe we want to change that?
-        peering success = ep.peer(destination, port);
-        if (!success || ep.outgoing_connection_status().want_pop().front().status
-                        != outgoing_connection_status::tag::established) {
             return false;
         }
-
         // TODO: do we want to use the incidentName as topic?
-        ep.send(alert->incidentName, alert->ToMessage());
+        endpoint->send(alert->incidentName, alert->ToMessage());
         return true;
     }
 }

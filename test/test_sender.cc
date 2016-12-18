@@ -1,14 +1,9 @@
-//
-// Created by flx on 11.12.16.
-//
-
 #include <catch.hpp>
 #include <acu/sender.h>
-#include <broker/endpoint.hh>
 #include <broker/message_queue.hh>
-#include <broker/broker.hh>
 #include <iostream>
 #include <unistd.h>
+#include <broker/broker.hh>
 
 // Provides a mock implementation for OutgoingAlert
 class MockOutgoingAlert : public acu::OutgoingAlert {
@@ -39,30 +34,38 @@ TEST_CASE("Testing sender class layout", "[sender]") {
 
 TEST_CASE("Testing sender send functionality", "[sender]") {
     // setup
-    std::string local_ip = "127.0.0.1";
-    std::uint16_t local_port = 9999;
-
-    acu::Sender *sender = new acu::Sender(local_ip, local_port);
-    REQUIRE(sender != nullptr);
+    broker::init();
 
     auto alertName = "MyAlert";
     auto alertTime = std::chrono::system_clock::now();
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(alertName, alertTime);
-    REQUIRE(mockAlert != nullptr);
+    REQUIRE_FALSE(mockAlert->ToMessageCalled());
 
     SECTION("Testing successful send") {
+        std::string local_ip = "127.0.0.1";
+        acu::port_t local_port = 9999;
+
         // remote bro-broker "mock" via localhost
-        broker::init();
         broker::endpoint rec_ep("Receiver Endpoint");
-        bool listening = rec_ep.listen(local_port, local_ip.c_str());
-        REQUIRE(listening);
         broker::message_queue queue(alertName, rec_ep);
 
+        bool listening = rec_ep.listen(local_port, local_ip.c_str());
+        REQUIRE(listening);
+
+        usleep(300 * 1000); // wait for listen to grip...
+
+        acu::Sender *sender = new acu::Sender(local_ip, local_port);
+        REQUIRE(sender != nullptr);
+
+        // wait on this site with the mocked receiver:
+        REQUIRE(rec_ep.incoming_connection_status().need_pop().front().status
+                == broker::incoming_connection_status::tag::established);
+
         // do test
-        sleep(1); // sender is non blocking so we need to wait for the "listen" to take effect.
+        usleep(100 * 1000);
         bool success = sender->Send(mockAlert);
-        REQUIRE(mockAlert->ToMessageCalled());
         REQUIRE(success);
+        REQUIRE(mockAlert->ToMessageCalled());
 
         // the non-blocking is wanted here. test should break if nothing is there instead of waiting forever.
         for (auto &msg : queue.want_pop()) {
@@ -72,11 +75,15 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
     }
 
     SECTION("Testing sending without peering") {
+
+        // provide invalid address...
+        acu::Sender *sender = new acu::Sender("127.0.0.1", 1234);
+
         // do test
         bool success = sender->Send(mockAlert);
 
         // not sent? -> should not have been converted!
-        REQUIRE_FALSE(mockAlert->ToMessageCalled());
         REQUIRE_FALSE(success);
+        REQUIRE_FALSE(mockAlert->ToMessageCalled());
     }
 }
