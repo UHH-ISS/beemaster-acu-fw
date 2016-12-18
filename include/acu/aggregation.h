@@ -5,13 +5,13 @@
 #ifndef ACU_FW_AGGREGATIONALGORITHM_H
 #define ACU_FW_AGGREGATIONALGORITHM_H
 
-#include "threshold.h"
 #include "incoming_alert.h"
 #include "storage.h"
+#include "threshold.h"
 
 namespace acu {
 
-    class Aggregation{
+    class Aggregation {
     public:
         Aggregation(Storage *storage, Threshold *thresholds[])
             : storage(storage), thresholds(thresholds) {};

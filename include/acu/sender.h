@@ -6,16 +6,20 @@
 #define ACU_FW_SENDER_H
 
 #include "outgoing_alert.h"
+#include "utils.h"
 
 #include <string>
+#include <broker/endpoint.hh>
 
 namespace acu {
 
     class Sender {
     public:
-        Sender(std::string destination, uint16_t port);
+        Sender(std::string destination, port_t port);
+        bool Send(OutgoingAlert *alert);
 
-        void Send(OutgoingAlert alert);
+    private:
+        broker::endpoint *endpoint;
     };
 }
 

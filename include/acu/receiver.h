@@ -5,8 +5,13 @@
 #ifndef ACU_FW_RECEIVER_H
 #define ACU_FW_RECEIVER_H
 
-#include <cstdint>
+#include "utils.h"
+
+#include <broker/endpoint.hh>
+#include <broker/message.hh>
+#include <functional>
 #include <string>
+#include <vector>
 
 #include <broker/endpoint.hh>
 
@@ -21,14 +26,20 @@ namespace acu {
         /// \param address  The address to listen on.
         /// \param port     The port to listen on.
         /// \param topics   The topics to subscribe to.
-        Receiver(std::string address, port_t port, std::string topics[]);
+        Receiver(std::string address, port_t port, std::vector<std::string>* topics)
+                : address(address), port(port), topics(topics) {};
 
-        void Listen();
+        // TODO: The broker message could/should be a reference to transfer ownership to the acu
+        void Listen(std::function<void(const std::string, const broker::message&)>);
+
     private:
-        broker::endpoint* endpoints[];
+        std::string address;
+        port_t port;
+        std::vector<std::string> *topics;
     };
 
-    const static std::string ENDPOINT_PREFIX = "acu_receiver";
+    // This could also be set via config file?
+    const static std::string ENDPOINT_NAME = "acu_receiver";
 }
 
 

@@ -2,8 +2,9 @@
 // Created by florian on 12/1/16.
 //
 
-#include <iostream>
 #include "acu/incoming_alert.h"
+
+#include <iostream>
 
 namespace acu {
 

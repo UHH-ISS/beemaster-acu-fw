@@ -5,12 +5,11 @@
 #ifndef ACU_FW_INCOMING_ALERT_H
 #define ACU_FW_INCOMING_ALERT_H
 
-#include <chrono>
-#include <string>
+#include "utils.h"
 
 #include <broker/message.hh>
-
-#include "utils.h"
+#include <chrono>
+#include <string>
 
 namespace acu {
     using namespace std::chrono;
