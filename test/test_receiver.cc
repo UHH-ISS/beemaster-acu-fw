@@ -93,9 +93,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         REQUIRE(called.at(topics[1]) == msg2);
         REQUIRE(called.at(topics[2]) == msg3);
     }
-    // single queue -> receive okay / multi queue -> partial receive
-    // multi queue -> full receive
-
-    // single queue -> receive fail
-    // multi queue -> full fail
+    // single queue -> receive fail TODO
+    // multi queue -> full fail TODO
 }
