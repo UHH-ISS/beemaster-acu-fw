@@ -47,7 +47,11 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
 
         // remote bro-broker "mock" via localhost
         broker::endpoint rec_ep("Receiver Endpoint");
-        rec_ep.listen(local_port, local_ip.c_str());
+        broker::message_queue queue(alertName, rec_ep);
+
+        bool listening = rec_ep.listen(local_port, local_ip.c_str());
+        REQUIRE(listening);
+
         usleep(300 * 1000); // wait for listen to grip...
 
         acu::Sender *sender = new acu::Sender(local_ip, local_port);
@@ -57,9 +61,8 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
         REQUIRE(rec_ep.incoming_connection_status().need_pop().front().status
                 == broker::incoming_connection_status::tag::established);
 
-        broker::message_queue queue(alertName, rec_ep);
-
         // do test
+        usleep(1000);
         bool success = sender->Send(mockAlert);
         REQUIRE(success);
         REQUIRE(mockAlert->ToMessageCalled());
