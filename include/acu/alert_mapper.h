@@ -12,9 +12,11 @@ namespace acu {
     class AlertMapper {
 
     public:
-        AlertMapper() : {};
+        AlertMapper() {};
 
-        IncomingAlert GetAlert(std::string topic, broker::message &msg);
+        IncomingAlert* GetAlert(std::string topic, const broker::message &msg) {
+            return nullptr;
+        };
 
     };
 }
