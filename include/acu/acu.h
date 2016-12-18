@@ -5,6 +5,7 @@
 #include "correlation.h"
 #include "receiver.h"
 #include "sender.h"
+#include "alert_mapper.h"
 
 #include <unordered_map>
 
@@ -26,9 +27,13 @@ namespace acu {
 
         void Run();
 
+    protected:
+        void OnReceive(const std::string topic, const broker::message &message);
+
     private:
         Receiver *receiver;
         Sender *sender;
+        AlertMapper *mapper;
 
         std::unordered_map<std::string, Aggregation*> *aggregations;
         std::unordered_map<std::string, Correlation*> *correlations;
