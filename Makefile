@@ -12,7 +12,7 @@ build:
 
 test: build
 	cd $(BUILD_DIR)
-	cmake --target tests . -- -j 4
+	cmake --build . --target tests -- -j 4
 	./test/tests
 
 # TODO add target to pull lib up
