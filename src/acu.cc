@@ -33,20 +33,24 @@ namespace acu {
         // Async fork a listening thread
         receiver->Listen(std::bind(&Acu::OnReceive, this, std::placeholders::_1, std::placeholders::_2));
 
-        // This keeps another thred running, we do not need to loop here
+        // This keeps another thread running, we do not need to loop here
     }
 
     void Acu::OnReceive(const std::string topic, const broker::message &message) {
         std::cout << "Acu OnReceive for topic " + topic << std::endl;
-        if (!aggregations->count(topic)) {
-            // TODO Log error
-            return;
-        }
 
         IncomingAlert *alert = mapper->GetAlert(topic, message);
 
+        if (alert == nullptr) {
+            //TODO: "Log no mapping"
+            return;
+        }
+
         storage->Persist(alert);
-        if (aggregations->at(topic)->Invoke(alert)) {
+
+        bool aggregated = !aggregations->count(topic) || aggregations->at(topic)->Invoke(alert);
+
+        if (aggregated) {
             OutgoingAlert *outgoing = correlations->at(topic)->Invoke();
             if (outgoing != nullptr) {
                 sender->Send(outgoing);
