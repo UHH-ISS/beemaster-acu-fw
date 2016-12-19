@@ -10,6 +10,7 @@
 
 #include <acu/acu.h>
 #include <iostream>
+#include <broker/message_queue.hh>
 
 class MockStorage : public acu::Storage {
     public:
@@ -21,6 +22,18 @@ class MockStorage : public acu::Storage {
             persisted = true;
         }
 };
+
+class MockOutgoingAlert : public acu::OutgoingAlert {
+public:
+    MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
+            : acu::OutgoingAlert(name, timestamp), toMessageCalled(false) {};
+    bool toMessageCalled;
+    const broker::message ToMessage() {
+        toMessageCalled = true;
+        return acu::OutgoingAlert::ToMessage();
+    }
+};
+
 
 class MockAggregation : public acu::Aggregation {
     public:
@@ -38,12 +51,14 @@ class MockAggregation : public acu::Aggregation {
 
 class MockCorrelation : public acu::Correlation {
     public:
-        MockCorrelation(acu::Storage *storage, std::vector<acu::Threshold> *thresholds)
-            : acu::Correlation(storage, thresholds), correlated(false) {}
+        MockCorrelation(acu::Storage *storage, std::vector<acu::Threshold> *thresholds, acu::OutgoingAlert *alert)
+            : acu::Correlation(storage, thresholds), correlated(false), dummyAlert(alert) {}
         bool correlated;
+        acu::OutgoingAlert *dummyAlert;
 
-        void Invoke() {
+        acu::OutgoingAlert* Invoke() {
             correlated = true;
+            return dummyAlert;
         }
 };
 
@@ -63,16 +78,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
     // This is kind of a "framework integration test"
 
-    // Mock an alerttype + topic
-    // verify receiver is started
-    // send sth, assert receive
-    // mock mapping
-    // assert mapping for correct topic -> alertType
-    // mock aggregation
-    // assert invocation of aggregation
-    // (on pos agg test: assert invocation of correlation)
-    // (on pos corr test: assert sender sending)
-
     MockStorage *storage = new MockStorage("DB_NAME");
     auto thr = acu::Threshold(1, "proto", "http");
     auto thresholds = new std::vector<acu::Threshold>();
@@ -85,19 +90,37 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
     acu::Acu *acu = new acu::Acu(storage);
     MockAggregation *agg = new MockAggregation(storage, thresholds);
-    MockCorrelation *corr = new MockCorrelation(storage, thresholds);
+    auto alertTime = std::chrono::system_clock::now();
+    MockOutgoingAlert *mockAlert = new MockOutgoingAlert("META ALERT", alertTime);
+    MockCorrelation *corr = new MockCorrelation(storage, thresholds, mockAlert);
 
     acu->Register(topics, agg, corr);
 
     REQUIRE_FALSE(storage->persisted);
     REQUIRE(agg->invokes == 0);
     REQUIRE_FALSE(corr->correlated);
+    REQUIRE_FALSE(mockAlert->toMessageCalled);
+
+    // remote bro-broker "mock" via localhost
+    broker::endpoint meta_alert_rec("Meta Alert Receiver");
+    broker::message_queue meta_alert_queue(topic, meta_alert_rec);
+
+    bool listening = meta_alert_rec.listen(9998, "127.0.0.1");
+    REQUIRE(listening);
+
+    // now we expect to have our ACU receiver listening on 127.0.0.1:9999
+    // and a mocked meta-alert receiver listening on 127.0.0.1:9998
+    // TODO: those addresses are hardcoded. The test will break if they get configurable
 
     acu->Run();
-    usleep(1000*300); // let our forked receiver grip
 
-    // now we expect to have a receiver listening on 127.0.0.1:9999
-    // TODO: that address is hardcoded. The test will break if this gets configurable
+    // let everything take its time...!
+    usleep(500 * 1000);
+
+    // our ACU meta-alert sender should have connected to the mock meta-alert receiver (aka remote bro)
+    REQUIRE(meta_alert_rec.incoming_connection_status().want_pop().front().status
+            == broker::incoming_connection_status::tag::established);
+
 
     SECTION("Test successful roundtrip") {
 
@@ -110,21 +133,28 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
                 "DEST_IP",
                 1338
         };
-        auto sender = broker::endpoint("acu test sender");
+        auto inc_alert_sender = broker::endpoint("incoming alert sender");
 
         std::cout << "ACU test peer" <<std::endl;
-        sender.peer("127.0.0.1", 9999);
+        inc_alert_sender.peer("127.0.0.1", 9999);
 
-        auto status = sender.outgoing_connection_status().need_pop().front().status;
+        // the fake incoming alert sender must be able to bind against our ACU receiver
+        auto status = inc_alert_sender.outgoing_connection_status().need_pop().front().status;
         REQUIRE(status == broker::outgoing_connection_status::tag::established);
 
-        sender.send(topic, msg);
+        inc_alert_sender.send(topic, msg);
         usleep(1000*300);
 
+        // framwork should receive sent message and auto-persist it
         REQUIRE(storage->persisted);
 
+        // aggregation is registered, so it should be invoked
         REQUIRE(agg->invokes == 1);
 
+        // The mocked aggregation triggers for correlation immediately, so our framework should invoke corr
         REQUIRE(corr->correlated);
+
+        // The mocked correlation always returns a static meta alert, so our framework should send that
+        REQUIRE(mockAlert->toMessageCalled);
     }
 }

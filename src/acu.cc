@@ -47,7 +47,10 @@ namespace acu {
 
         storage->Persist(alert);
         if (aggregations->at(topic)->Invoke(alert)) {
-            correlations->at(topic)->Invoke();
+            OutgoingAlert *outgoing = correlations->at(topic)->Invoke();
+            if (outgoing != nullptr) {
+                sender->Send(outgoing);
+            }
         }
     }
 }

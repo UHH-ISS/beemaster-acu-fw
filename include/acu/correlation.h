@@ -8,6 +8,7 @@
 #include "storage.h"
 #include "threshold.h"
 #include "utils.h"
+#include "outgoing_alert.h"
 
 namespace acu {
 
@@ -19,7 +20,7 @@ namespace acu {
         Storage *storage;
         std::vector<Threshold> *thresholds;
 
-        virtual void Invoke() = 0;
+        virtual OutgoingAlert* Invoke() = 0;
     };
 }
 
