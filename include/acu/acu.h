@@ -13,8 +13,11 @@ namespace acu {
 
     class Acu {
     public:
-        Acu() : aggregations(new std::unordered_map<std::string, Aggregation*>()),
-                correlations(new std::unordered_map<std::string, Correlation*>()) {};
+        /// @param storage  The concrete storage implementation to use for storing every incoming alert.
+        Acu(Storage *storage)
+                : storage(storage),
+                  aggregations(new std::unordered_map<std::string, Aggregation*>()),
+                  correlations(new std::unordered_map<std::string, Correlation*>()) {};
 
         /// Register aggregations and correlations on the given topics.
         ///
@@ -34,6 +37,7 @@ namespace acu {
         Receiver *receiver;
         Sender *sender;
         AlertMapper *mapper;
+        Storage *storage;
 
         std::unordered_map<std::string, Aggregation*> *aggregations;
         std::unordered_map<std::string, Correlation*> *correlations;
