@@ -8,18 +8,19 @@
 #include "storage.h"
 #include "threshold.h"
 #include "utils.h"
+#include "outgoing_alert.h"
 
 namespace acu {
 
     class Correlation {
     public:
-        Correlation(Storage *storage, Threshold *thresholds[])
+        Correlation(Storage *storage, std::vector<Threshold> *thresholds)
                 : storage(storage), thresholds(thresholds) {};
 
         Storage *storage;
-        Threshold **thresholds;
+        std::vector<Threshold> *thresholds;
 
-        virtual void Invoke() = 0;
+        virtual OutgoingAlert* Invoke() = 0;
     };
 }
 

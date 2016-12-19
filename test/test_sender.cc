@@ -43,7 +43,7 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
 
     SECTION("Testing successful send") {
         std::string local_ip = "127.0.0.1";
-        acu::port_t local_port = 9999;
+        acu::port_t local_port = 9970;
 
         // remote bro-broker "mock" via localhost
         broker::endpoint rec_ep("Receiver Endpoint");
