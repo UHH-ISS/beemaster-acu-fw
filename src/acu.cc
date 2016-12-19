@@ -46,6 +46,8 @@ namespace acu {
         IncomingAlert *alert = mapper->GetAlert(topic, message);
 
         storage->Persist(alert);
-        aggregations->at(topic)->Invoke(alert);
+        if (aggregations->at(topic)->Invoke(alert)) {
+            correlations->at(topic)->Invoke();
+        }
     }
 }

@@ -126,8 +126,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
         REQUIRE(agg->invokes == 1);
 
-        // TODO: so far nobody invokes the correlation LOL
-        //REQUIRE(corr->correlated);
+        REQUIRE(corr->correlated);
     }
-
 }
