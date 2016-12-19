@@ -24,14 +24,14 @@ class MockStorage : public acu::Storage {
 };
 
 class MockOutgoingAlert : public acu::OutgoingAlert {
-public:
-    MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
-            : acu::OutgoingAlert(name, timestamp), toMessageCalled(false) {};
-    bool toMessageCalled;
-    const broker::message ToMessage() {
-        toMessageCalled = true;
-        return acu::OutgoingAlert::ToMessage();
-    }
+    public:
+        MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
+                : acu::OutgoingAlert(name, timestamp), toMessageCalled(false) {};
+        bool toMessageCalled;
+        const broker::message ToMessage() {
+            toMessageCalled = true;
+            return acu::OutgoingAlert::ToMessage();
+        }
 };
 
 
@@ -90,8 +90,9 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
     acu::Acu *acu = new acu::Acu(storage);
     MockAggregation *agg = new MockAggregation(storage, thresholds);
-    auto alertTime = std::chrono::system_clock::now();
-    MockOutgoingAlert *mockAlert = new MockOutgoingAlert("META ALERT", alertTime);
+    auto mockAlertName = "META ALERT";
+    auto mockAlertTime = std::chrono::system_clock::now();
+    MockOutgoingAlert *mockAlert = new MockOutgoingAlert(mockAlertName, mockAlertTime);
     MockCorrelation *corr = new MockCorrelation(storage, thresholds, mockAlert);
 
     acu->Register(topics, agg, corr);
@@ -108,11 +109,13 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     bool listening = meta_alert_rec.listen(9998, "127.0.0.1");
     REQUIRE(listening);
 
-    // now we expect to have our ACU receiver listening on 127.0.0.1:9999
-    // and a mocked meta-alert receiver listening on 127.0.0.1:9998
-    // TODO: those addresses are hardcoded. The test will break if they get configurable
 
     acu->Run();
+    // now we expect to have our ACU receiver listening on 127.0.0.1:9999
+    // and a mocked meta-alert receiver listening on 127.0.0.1:9998
+    // our ACU sender will try to bind against the meta-alert receiver
+    // TODO: those addresses are hardcoded. The test will break if they get configurable
+
 
     // let everything take its time...!
     usleep(500 * 1000);
@@ -139,16 +142,16 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
         inc_alert_sender.peer("127.0.0.1", 9999);
 
         // the fake incoming alert sender must be able to bind against our ACU receiver
-        auto status = inc_alert_sender.outgoing_connection_status().need_pop().front().status;
-        REQUIRE(status == broker::outgoing_connection_status::tag::established);
+        REQUIRE(inc_alert_sender.outgoing_connection_status().need_pop().front().status
+                == broker::outgoing_connection_status::tag::established);
 
         inc_alert_sender.send(topic, msg);
         usleep(1000*300);
 
-        // framwork should receive sent message and auto-persist it
+        // framework should receive the sent message and auto-persist it
         REQUIRE(storage->persisted);
 
-        // aggregation is registered, so it should be invoked
+        // aggregation is registered, so it should be invoked exactly once
         REQUIRE(agg->invokes == 1);
 
         // The mocked aggregation triggers for correlation immediately, so our framework should invoke corr
@@ -156,5 +159,10 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
         // The mocked correlation always returns a static meta alert, so our framework should send that
         REQUIRE(mockAlert->toMessageCalled);
+
+        for (auto &msg : meta_alert_queue.want_pop()) {
+            REQUIRE(msg.at(0) == mockAlertTime.time_since_epoch().count());
+            REQUIRE(msg.at(1) == mockAlertName);
+        }
     }
 }
