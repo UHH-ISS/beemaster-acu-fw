@@ -15,7 +15,7 @@ namespace acu {
         AlertMapper() {};
 
         IncomingAlert* GetAlert(std::string topic, const broker::message &msg) {
-            return nullptr;
+            return new IncomingAlert(msg);
         };
 
     };
