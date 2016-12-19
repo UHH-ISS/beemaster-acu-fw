@@ -10,29 +10,16 @@
 
 #include <acu/acu.h>
 #include <iostream>
-#include <broker/broker.h>
-
-
-TEST_CASE("Testing Acu class layout", "[acu]") {
-    REQUIRE(std::is_copy_assignable<acu::Acu>());
-    REQUIRE(std::is_copy_constructible<acu::Acu>());
-
-    REQUIRE(std::is_move_assignable<acu::Acu>());
-    REQUIRE(std::is_move_constructible<acu::Acu>());
-
-    REQUIRE(std::is_standard_layout<acu::Acu>());
-    REQUIRE_FALSE(std::is_pod<acu::Acu>());
-}
 
 class MockStorage : public acu::Storage {
-public:
-    MockStorage(std::string db_name) : acu::Storage(db_name), persisted(false) {};
-    bool persisted;
-    void Persist(acu::IncomingAlert *alert) {
-        // supress a warning for unused alert
-        alert->protocol();
-        persisted = true;
-    }
+    public:
+        MockStorage(std::string db_name) : acu::Storage(db_name), persisted(false) {};
+        bool persisted;
+        void Persist(acu::IncomingAlert *alert) {
+            // supress a warning for unused alert
+            alert->protocol();
+            persisted = true;
+        }
 };
 
 class MockAggregation : public acu::Aggregation {
@@ -59,6 +46,18 @@ class MockCorrelation : public acu::Correlation {
             correlated = true;
         }
 };
+
+
+TEST_CASE("Testing Acu class layout", "[acu]") {
+    REQUIRE(std::is_copy_assignable<acu::Acu>());
+    REQUIRE(std::is_copy_constructible<acu::Acu>());
+
+    REQUIRE(std::is_move_assignable<acu::Acu>());
+    REQUIRE(std::is_move_constructible<acu::Acu>());
+
+    REQUIRE(std::is_standard_layout<acu::Acu>());
+    REQUIRE_FALSE(std::is_pod<acu::Acu>());
+}
 
 TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
