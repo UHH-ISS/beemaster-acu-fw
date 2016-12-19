@@ -43,7 +43,9 @@ namespace acu {
             for (auto &q : *queues) {
                 if (FD_ISSET(q->fd(), &fds)) {
                     for (auto &msg : q->want_pop()) {
-                        callback(q->get_topic_prefix(), msg);
+                        if (q->get_topic_prefix() != "") {
+                            callback(q->get_topic_prefix(), msg);
+                        }
                     }
                 }
             }
