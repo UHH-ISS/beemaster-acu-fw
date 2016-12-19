@@ -11,7 +11,7 @@
 
 namespace acu {
 
-    class Aggregation{
+    class Aggregation {
     public:
         Aggregation(Storage *storage, Threshold *thresholds[])
             : storage(storage), thresholds(thresholds) {};

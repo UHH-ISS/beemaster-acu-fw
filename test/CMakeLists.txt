@@ -7,7 +7,8 @@ set(SOURCE_FILES
         test_correlation.cc
         test_incoming_alert.cc
         test_logger.cc
-        test_outgoingalert.cc
+        test_outgoing_alert.cc
+        test_receiver.cc
         test_sender.cc
         test_storage.cc
         test_threshold.cc)
@@ -22,7 +23,6 @@ add_executable(tests ${SOURCE_FILES})
 target_link_libraries(tests
         Catch
         acu_shared)
-
 
 # Add tests to CTest
 enable_testing()

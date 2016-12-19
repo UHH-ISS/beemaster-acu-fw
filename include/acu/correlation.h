@@ -7,17 +7,17 @@
 
 #include "storage.h"
 #include "threshold.h"
+#include "utils.h"
 
 namespace acu {
 
     class Correlation {
     public:
-        Correlation(Storage *storage, Threshold *thresholds[], std::string *topics[])
-                : storage(storage), thresholds(thresholds), topics(topics) {};
+        Correlation(Storage *storage, Threshold *thresholds[])
+                : storage(storage), thresholds(thresholds) {};
 
         Storage *storage;
         Threshold **thresholds;
-        std::string **topics;
 
         virtual void Invoke() = 0;
     };
