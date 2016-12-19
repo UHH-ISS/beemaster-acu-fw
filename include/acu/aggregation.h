@@ -13,13 +13,13 @@ namespace acu {
 
     class Aggregation {
     public:
-        Aggregation(Storage *storage, Threshold *thresholds[])
+        Aggregation(Storage *storage, std::vector<Threshold> *thresholds)
             : storage(storage), thresholds(thresholds) {};
 
         Storage *storage;
-        Threshold **thresholds;
+        std::vector<Threshold> *thresholds;
 
-        virtual void Invoke(IncomingAlert *alert) = 0;
+        virtual bool Invoke(IncomingAlert *alert) = 0;
     };
 }
 
