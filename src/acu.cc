@@ -1,3 +1,4 @@
+#include <iostream>
 #include "acu/acu.h"
 
 namespace acu {
@@ -32,17 +33,19 @@ namespace acu {
         // Async fork a listening thread
         receiver->Listen(std::bind(&Acu::OnReceive, this, std::placeholders::_1, std::placeholders::_2));
 
-        // TODO: RUN loop
+        // This keeps another thred running, we do not need to loop here
     }
 
     void Acu::OnReceive(const std::string topic, const broker::message &message) {
-        // TODO: automatic persist of alert
-
+        std::cout << "Acu OnReceive for topic " + topic << std::endl;
         if (!aggregations->count(topic)) {
             // TODO Log error
             return;
         }
+
         IncomingAlert *alert = mapper->GetAlert(topic, message);
+
+        storage->Persist(alert);
         aggregations->at(topic)->Invoke(alert);
     }
 }
