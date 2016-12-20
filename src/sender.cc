@@ -17,7 +17,7 @@ namespace acu {
         endpoint->peer(destination, port);
     }
 
-    bool Sender::Send(OutgoingAlert *alert) {
+    bool Sender::Send(OutgoingAlert *alert) const {
 
         auto conn_stati = endpoint->outgoing_connection_status().want_pop();
         if (conn_stati.size() == 0
