@@ -3,7 +3,9 @@
 # Source files
 set(SOURCE_FILES
         main.cc
+        test_acu.cc
         test_aggregation.cc
+        test_alert_mapper.cc
         test_correlation.cc
         test_incoming_alert.cc
         test_logger.cc
@@ -11,8 +13,7 @@ set(SOURCE_FILES
         test_receiver.cc
         test_sender.cc
         test_storage.cc
-        test_threshold.cc
-        test_acu.cc)
+        test_threshold.cc)
 
 # Add catch (testing library)
 set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
