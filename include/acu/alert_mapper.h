@@ -10,14 +10,8 @@
 namespace acu {
 
     class AlertMapper {
-
     public:
-        AlertMapper() {};
-
-        IncomingAlert* GetAlert(std::string topic, const broker::message &msg) {
-            return new IncomingAlert(msg);
-        };
-
+        virtual IncomingAlert* GetAlert(const std::string, const broker::message&) const;
     };
 }
 #endif //ACU_FW_ALERT_MAPPER_H
