@@ -14,8 +14,8 @@ namespace acu {
     class Acu {
     public:
         /// @param storage  The concrete storage implementation to use for storing every incoming alert.
-        Acu(Storage *storage)
-                : storage(storage),
+        Acu(Storage *storage, AlertMapper *mapper)
+                : mapper(mapper), storage(storage),
                   aggregations(new std::unordered_map<std::string, Aggregation*>()),
                   correlations(new std::unordered_map<std::string, Correlation*>()) {};
 
@@ -34,10 +34,12 @@ namespace acu {
         void OnReceive(const std::string topic, const broker::message &message);
 
     private:
-        Receiver *receiver;
-        Sender *sender;
         AlertMapper *mapper;
         Storage *storage;
+
+        // Broker communication
+        Receiver *receiver;
+        Sender *sender;
 
         std::unordered_map<std::string, Aggregation*> *aggregations;
         std::unordered_map<std::string, Correlation*> *correlations;
