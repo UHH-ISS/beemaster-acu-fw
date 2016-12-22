@@ -1,5 +1,6 @@
-#include <iostream>
 #include "acu/acu.h"
+
+#include <iostream>
 
 namespace acu {
 
@@ -26,9 +27,6 @@ namespace acu {
         // TODO: config?
         receiver = new Receiver("127.0.0.1", 9999, topics);
         sender = new Sender("127.0.0.1", 9998);
-
-        //TODO: mapper parameter?
-        mapper = new AlertMapper();
 
         // Async fork a listening thread
         receiver->Listen(std::bind(&Acu::OnReceive, this, std::placeholders::_1, std::placeholders::_2));

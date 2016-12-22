@@ -6,11 +6,12 @@
  */
 
 #include "catch.hpp"
-#include <unistd.h>
 
 #include <acu/acu.h>
-#include <iostream>
+#include <acu/alert_mapper.h>
 #include <broker/message_queue.hh>
+#include <iostream>
+#include <unistd.h>
 
 class MockStorage : public acu::Storage {
     public:
@@ -79,6 +80,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     // This is kind of a "framework integration test"
 
     MockStorage *storage = new MockStorage("DB_NAME");
+    acu::AlertMapper *mapper = new acu::AlertMapper();
     auto thr = acu::Threshold(1, "proto", "http");
     auto thresholds = new std::vector<acu::Threshold>();
     thresholds->push_back(thr);
@@ -88,7 +90,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     topics->push_back(topic);
 
 
-    acu::Acu *acu = new acu::Acu(storage);
+    acu::Acu *acu = new acu::Acu(storage, mapper);
     MockAggregation *agg = new MockAggregation(storage, thresholds);
     auto mockAlertName = "META ALERT";
     auto mockAlertTime = std::chrono::system_clock::now();
