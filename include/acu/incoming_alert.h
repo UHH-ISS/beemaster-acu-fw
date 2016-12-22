@@ -16,32 +16,35 @@ namespace acu {
 
     class IncomingAlert {
     public:
-        explicit IncomingAlert(const broker::message&);
+        explicit IncomingAlert(const std::string*, const broker::message&);
+
+        // Topic the IncomingAlert was received under
+        const std::string *topic;
 
         // Timestamp indicating when the alert occurred
         time_point<system_clock> timestamp();
 
         // Incident type (free text)
-        std::string& incident_type();
+        const std::string& incident_type() const;
         // Protocol of the incident
         //TODO: Is this tcp/udp or ftp/http/etc?
-        std::string& protocol();
+        const std::string& protocol() const;
 
         // Source IP of the connection that triggered this alert
-        std::string& source_ip();
+        const std::string& source_ip() const;
         // Source port of the connection that triggered this alert
-        port_t& source_port();
+        const port_t& source_port() const;
 
         // Destination IP of the connection that triggered this alert
-        std::string& destination_ip();
+        const std::string& destination_ip() const;
         // Destination port of the connection that triggered this alert
-        port_t& destination_port();
+        const port_t& destination_port() const;
 
         virtual bool operator==(const IncomingAlert&) const;
         virtual bool operator!=(const IncomingAlert&) const;
 
     protected:
-        std::vector<broker::data> message;
+        const std::vector<broker::data> message;
     };
 } // namespace acu
 

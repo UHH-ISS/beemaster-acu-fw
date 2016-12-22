@@ -8,7 +8,6 @@
 #include "catch.hpp"
 
 #include <acu/acu.h>
-#include <acu/alert_mapper.h>
 #include <broker/message_queue.hh>
 #include <iostream>
 #include <unistd.h>
@@ -17,7 +16,7 @@ class MockStorage : public acu::Storage {
     public:
         MockStorage(std::string db_name) : acu::Storage(db_name), persisted(false) {};
         bool persisted;
-        void Persist(acu::IncomingAlert *alert) {
+        void Persist(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
             alert->protocol();
             persisted = true;
@@ -42,7 +41,7 @@ class MockAggregation : public acu::Aggregation {
             : acu::Aggregation(storage, thresholds), invokes(0) {}
         int16_t invokes;
 
-        bool Invoke(acu::IncomingAlert *alert) {
+        bool Invoke(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
             alert->protocol();
             ++invokes;
@@ -89,7 +88,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     auto topics = new std::vector<std::string>();
     topics->push_back(topic);
 
-
     acu::Acu *acu = new acu::Acu(storage, mapper);
     MockAggregation *agg = new MockAggregation(storage, thresholds);
     auto mockAlertName = "META ALERT";
@@ -111,13 +109,11 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     bool listening = meta_alert_rec.listen(9998, "127.0.0.1");
     REQUIRE(listening);
 
-
     acu->Run();
     // now we expect to have our ACU receiver listening on 127.0.0.1:9999
     // and a mocked meta-alert receiver listening on 127.0.0.1:9998
     // our ACU sender will try to bind against the meta-alert receiver
     // TODO: those addresses are hardcoded. The test will break if they get configurable
-
 
     // let everything take its time...!
     usleep(500 * 1000);
@@ -149,6 +145,9 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
         inc_alert_sender.send(topic, msg);
         usleep(1000*300);
+
+        // Process received alerts
+        acu->CheckForAlerts();
 
         // framework should receive the sent message and auto-persist it
         REQUIRE(storage->persisted);

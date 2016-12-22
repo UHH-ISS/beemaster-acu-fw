@@ -25,31 +25,29 @@ namespace acu {
         }
 
         // TODO: config?
-        receiver = new Receiver("127.0.0.1", 9999, topics);
+        receiver = new Receiver("127.0.0.1", 9999, topics, mapper);
         sender = new Sender("127.0.0.1", 9998);
 
         // Async fork a listening thread
-        receiver->Listen(std::bind(&Acu::OnReceive, this, std::placeholders::_1, std::placeholders::_2));
-
-        // This keeps another thread running, we do not need to loop here
+        receiver->Listen(alertQueue);
     }
 
-    void Acu::OnReceive(const std::string topic, const broker::message &message) {
-        std::cout << "Acu OnReceive for topic " + topic << std::endl;
-
-        IncomingAlert *alert = mapper->GetAlert(topic, message);
-
-        if (alert == nullptr) {
-            //TODO: "Log no mapping"
-            return;
+    void Acu::CheckForAlerts() {
+        while (!alertQueue->empty()) {
+            auto alert = alertQueue->front();
+            OnReceive(alert);
+            alertQueue->pop();
         }
+    }
+
+    void Acu::OnReceive(const IncomingAlert *alert) {
+        auto topic = alert->topic;
 
         storage->Persist(alert);
 
-        bool aggregated = !aggregations->count(topic) || aggregations->at(topic)->Invoke(alert);
-
+        bool aggregated = !aggregations->count(*topic) || aggregations->at(*topic)->Invoke(alert);
         if (aggregated) {
-            OutgoingAlert *outgoing = correlations->at(topic)->Invoke();
+            OutgoingAlert *outgoing = correlations->at(*topic)->Invoke();
             if (outgoing != nullptr) {
                 sender->Send(outgoing);
             }

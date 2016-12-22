@@ -16,7 +16,7 @@ namespace acu {
         std::string db_name;
         // TODO: add more DB properties
 
-        virtual void Persist(IncomingAlert *alert) = 0;
+        virtual void Persist(const IncomingAlert *alert) = 0;
     };
 }
 
