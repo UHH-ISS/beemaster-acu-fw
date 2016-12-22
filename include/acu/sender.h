@@ -1,6 +1,10 @@
-//
-// Created by florian on 12/1/16.
-//
+/* sender.h
+ * ACU Framework
+ *
+ * The sender sends messages to the given site.
+ *
+ * @author: 0ortmann
+ */
 
 #ifndef ACU_FW_SENDER_H
 #define ACU_FW_SENDER_H

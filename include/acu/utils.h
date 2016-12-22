@@ -1,6 +1,10 @@
-//
-// Created by dave on 07/12/16.
-//
+/* utils.h
+ * ACU Framework
+ *
+ * Different utilities.
+ *
+ * @author: 1jost
+ */
 
 #ifndef ACU_FW_UTILS_H
 #define ACU_FW_UTILS_H

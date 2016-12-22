@@ -1,6 +1,11 @@
-//
-// Created by florian on 12/1/16.
-//
+/* receiver.h
+ * ACU Framework
+ *
+ * The receiver peers with the given site and listens on incoming messages. The
+ * given callback will be called upon receiving such a message.
+ *
+ * @author: 1wilkens, 0ortmann, 1jost
+ */
 
 #ifndef ACU_FW_RECEIVER_H
 #define ACU_FW_RECEIVER_H

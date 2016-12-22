@@ -1,6 +1,12 @@
-//
-// Created by dave on 07/12/16.
-//
+/* logger.h
+ * ACU Framework
+ *
+ * The logger can be used to log different kind of messages in either stdout,
+ * stderr or some file.
+ * (currently not working)
+ *
+ * @author: 1jost, 1wilkens, 0ortmann
+ */
 
 #ifndef ACU_FW_LOGGER_H
 #define ACU_FW_LOGGER_H
