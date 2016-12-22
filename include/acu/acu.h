@@ -13,7 +13,10 @@ namespace acu {
 
     class Acu {
     public:
-        /// @param storage  The concrete storage implementation to use for storing every incoming alert.
+        /// @param storage  The concrete storage implementation to use for
+        ///                 storing every incoming alert.
+        /// @param mapper   The concrete alert mapper to be used to convert raw
+        ///                 Broker messages to IncomingAlerts.
         Acu(Storage *storage, AlertMapper *mapper)
                 : mapper(mapper), storage(storage),
                   aggregations(new std::unordered_map<std::string, Aggregation*>()),
