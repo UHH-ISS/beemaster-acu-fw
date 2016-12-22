@@ -2,9 +2,10 @@
  * Sends data via broker to given destination + port.
  */
 
+#include "acu/sender.h"
+
 #include <broker/broker.hh>
 #include <iostream>
-#include "acu/sender.h"
 
 namespace acu {
     // This could also be set via config file?

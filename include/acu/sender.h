@@ -8,8 +8,8 @@
 #include "outgoing_alert.h"
 #include "utils.h"
 
-#include <string>
 #include <broker/endpoint.hh>
+#include <string>
 
 namespace acu {
 

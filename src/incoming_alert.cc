@@ -4,8 +4,6 @@
 
 #include "acu/incoming_alert.h"
 
-#include <iostream>
-
 namespace acu {
 
     IncomingAlert::IncomingAlert(const broker::message &msg) : message(msg) {
