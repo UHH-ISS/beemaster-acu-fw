@@ -1,5 +1,9 @@
-/*
+/* sender.cc
+ * ACU Framework
+ *
  * Sends data via broker to given destination + port.
+ *
+ * <include/acu/sender.h>
  */
 
 #include <broker/broker.hh>

@@ -1,6 +1,8 @@
-//
-// Created by flx on 18.12.16.
-//
+/* alert_mapper.cc
+ * ACU Framework
+ * 
+ * <include/acu/alert_mapper.h>
+ */
 
 #include "acu/alert_mapper.h"
 
