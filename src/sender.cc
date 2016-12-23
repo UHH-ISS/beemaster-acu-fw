@@ -6,9 +6,10 @@
  * <include/acu/sender.h>
  */
 
+#include "acu/sender.h"
+
 #include <broker/broker.hh>
 #include <iostream>
-#include "acu/sender.h"
 
 namespace acu {
     // This could also be set via config file?
@@ -21,7 +22,7 @@ namespace acu {
         endpoint->peer(destination, port);
     }
 
-    bool Sender::Send(OutgoingAlert *alert) {
+    bool Sender::Send(OutgoingAlert *alert) const {
 
         auto conn_stati = endpoint->outgoing_connection_status().want_pop();
         if (conn_stati.size() == 0

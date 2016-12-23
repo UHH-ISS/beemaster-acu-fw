@@ -6,8 +6,6 @@
 
 #include "acu/incoming_alert.h"
 
-#include <iostream>
-
 namespace acu {
 
     IncomingAlert::IncomingAlert(const broker::message &msg) : message(msg) {
@@ -43,7 +41,7 @@ namespace acu {
         return *broker::get<std::string>(message.at(3));
     }
 
-    port_t& IncomingAlert::source_port() {
+    port_t& IncomingAlert::source_port() const {
         // Broker only knows one uint type which translates to uint64_t
         assert(broker::is<uint64_t >(message.at(4)));
         return (port_t&)(*broker::get<uint64_t>(message.at(4)));
@@ -54,7 +52,7 @@ namespace acu {
         return *broker::get<std::string>(message.at(5));
     }
 
-    port_t& IncomingAlert::destination_port() {
+    port_t& IncomingAlert::destination_port() const {
         assert(broker::is<uint64_t>(message.at(6)));
         return (port_t&)(*broker::get<uint64_t>(message.at(6)));
     }

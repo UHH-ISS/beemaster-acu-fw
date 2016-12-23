@@ -11,10 +11,10 @@
 #define ACU_FW_ACU_H
 
 #include "aggregation.h"
+#include "alert_mapper.h"
 #include "correlation.h"
 #include "receiver.h"
 #include "sender.h"
-#include "alert_mapper.h"
 
 #include <unordered_map>
 

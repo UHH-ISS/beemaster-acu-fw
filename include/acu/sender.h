@@ -12,15 +12,15 @@
 #include "outgoing_alert.h"
 #include "utils.h"
 
-#include <string>
 #include <broker/endpoint.hh>
+#include <string>
 
 namespace acu {
 
     class Sender {
     public:
         Sender(std::string destination, port_t port);
-        bool Send(OutgoingAlert *alert);
+        bool Send(OutgoingAlert *alert) const;
 
     private:
         broker::endpoint *endpoint;

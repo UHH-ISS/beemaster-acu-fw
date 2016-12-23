@@ -36,12 +36,12 @@ namespace acu {
         // Source IP of the connection that triggered this alert
         std::string& source_ip();
         // Source port of the connection that triggered this alert
-        port_t& source_port();
+        port_t& source_port() const;
 
         // Destination IP of the connection that triggered this alert
         std::string& destination_ip();
         // Destination port of the connection that triggered this alert
-        port_t& destination_port();
+        port_t& destination_port() const;
 
         virtual bool operator==(const IncomingAlert&) const;
         virtual bool operator!=(const IncomingAlert&) const;
