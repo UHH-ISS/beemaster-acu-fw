@@ -1,6 +1,10 @@
-//
-// Created by flx on 11.12.16.
-//
+/* test_storage.cc
+ * ACU Framework (test)
+ * 
+ * Test default assign behaviour.
+ *
+ * @author: 0ortmann
+ */
 
 #include "catch.hpp"
 

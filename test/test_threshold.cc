@@ -1,6 +1,10 @@
-//
-// Created by florian on 12/7/16.
-//
+/* test_threshold.cc
+ * ACU Framework (test)
+ * 
+ * Test extensive creation and assign behaviours.
+ *
+ * @author: 1wilkens
+ */
 
 #include "catch.hpp"
 
