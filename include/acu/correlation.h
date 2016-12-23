@@ -5,10 +5,10 @@
 #ifndef ACU_FW_CORRELATION_H
 #define ACU_FW_CORRELATION_H
 
+#include "outgoing_alert.h"
 #include "storage.h"
 #include "threshold.h"
 #include "utils.h"
-#include "outgoing_alert.h"
 
 namespace acu {
 

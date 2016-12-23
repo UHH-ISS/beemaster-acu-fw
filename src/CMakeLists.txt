@@ -3,15 +3,12 @@
 # Source files
 set(SOURCE_FILES
         acu.cc
-        aggregation.cc
-        correlation.cc
+        alert_mapper.cc
         incoming_alert.cc
         outgoing_alert.cc
         receiver.cc
         sender.cc
-        storage.cc
-        threshold.cc
-        alert_mapper.cc)
+        threshold.cc)
 
 # Disable -Wununsed-parameter as broker::get produces this error even when used correctly (I think?!)
 # TODO: Maybe scope this to the source files where broker::get is used? (Currently incoming_alert.cc)
