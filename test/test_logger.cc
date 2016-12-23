@@ -1,3 +1,10 @@
+/* test_logger.cc
+ * ACU Framework (test)
+ *
+ * Tries to test the logger (which is currently broken).
+ *
+ * @author: 1jost, 1wilkens
+ */
 #include "catch.hpp"
 
 #include "acu/logger.h"

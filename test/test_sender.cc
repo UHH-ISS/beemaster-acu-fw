@@ -1,3 +1,11 @@
+/* test_sender.cc
+ * ACU Framework (test)
+ *
+ * Intensive testing of the senders functionality.
+ *
+ * @author: 0ortmann
+ */
+
 #include <catch.hpp>
 #include <acu/sender.h>
 #include <broker/message_queue.hh>

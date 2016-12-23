@@ -1,6 +1,10 @@
-//
-// Created by florian on 12/9/16.
-//
+/* test_incoming_alert.cc
+ * ACU Framework (test)
+ *
+ * Test whether the access to the message's fields works correctly.
+ *
+ * @author: 1wilkens
+ */
 
 #include <catch.hpp>
 #include <iostream>

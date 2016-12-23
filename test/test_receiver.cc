@@ -1,6 +1,12 @@
-//
-// Created by florian on 12/16/16.
-//
+/* test_receiver.cc
+ * ACU Framework (test)
+ * 
+ * Tests default assignment behaviour.
+ * Currently only positive tests are implemented. Negative tests are not
+ * possible yet.
+ *
+ * @author: 0ortmann, 1wilkens
+ */
 
 #include "catch.hpp"
 

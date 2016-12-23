@@ -1,6 +1,10 @@
-//
-// Created by flx on 09.12.16.
-//
+/* test_aggregation.cc
+ * ACU Framework (test)
+ *
+ * Tests for basic assign behaviour.
+ *
+ * @author: 0ortmann
+ */
 
 #include "catch.hpp"
 

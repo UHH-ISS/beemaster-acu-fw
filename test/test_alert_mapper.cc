@@ -1,6 +1,10 @@
-//
-// Created by florian on 12/21/16.
-//
+/* test_alert_mapper.cc
+ * ACU Framework (test)
+ *
+ * Tests for basic assign behaviour.
+ *
+ * @author: 1wilkens
+ */
 
 #include "catch.hpp"
 #include <acu/alert_mapper.h>
