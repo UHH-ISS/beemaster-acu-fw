@@ -1,6 +1,12 @@
-//
-// Created by florian on 12/1/16.
-//
+/* incoming_alert.h
+ * ACU Framework
+ *
+ * The abstract class IncomingAlert is a proxy to the incoming broker message.
+ * As such, the realization lies upon the implementer, as it is to match the
+ * precise messages.
+ *
+ * @author: 1wilkens
+ */
 
 #ifndef ACU_FW_INCOMING_ALERT_H
 #define ACU_FW_INCOMING_ALERT_H

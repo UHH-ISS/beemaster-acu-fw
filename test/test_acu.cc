@@ -1,8 +1,12 @@
-/*
+/* test_acu.cc
+ * ACU Framework (test)
+ *
  * Dataflow test for the ACU class.
  *
  * TODO: NOTE: This test works, because the hardcoded addresses inside the ACU are known
  * TODO: Note: Sender on 127.0.0.1:9998 and receiver on 127.0.0.1:9999 FIXME
+ *
+ * @author: 0ortmann
  */
 
 #include "catch.hpp"

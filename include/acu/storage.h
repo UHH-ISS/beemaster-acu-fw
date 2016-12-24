@@ -1,6 +1,10 @@
-//
-// Created by florian on 12/1/16.
-//
+/* storage.h
+ * ACU Framework
+ *
+ * A simple abstract interface to the storage (database).
+ *
+ * @author: 0ortmann
+ */
 
 #ifndef ACU_FW_STORAGE_H
 #define ACU_FW_STORAGE_H

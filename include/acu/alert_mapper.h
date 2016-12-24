@@ -1,3 +1,12 @@
+/* alert_mapper.h
+ * ACU Framework
+ *
+ * The alert mapper is to be implemented by the _user_ and maps incoming raw
+ * broker messages to the corresponding incoming alerts.
+ *
+ * @author: 0ortmann, 1wilkens
+ */
+
 #ifndef ACU_FW_ALERT_MAPPER_H
 #define ACU_FW_ALERT_MAPPER_H
 

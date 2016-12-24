@@ -1,3 +1,9 @@
+/* acu.cc
+ * ACU Framework
+ * 
+ * <include/acu/acu.h>
+ */
+
 #include "acu/acu.h"
 
 #include <iostream>

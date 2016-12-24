@@ -1,6 +1,11 @@
-//
-// Created by florian on 12/1/16.
-//
+/* threshold.h
+ * ACU Framework
+ *
+ * The threshold is mainly a trigger-value for correlation and aggregation
+ * algorithms. It is a simple, efficient data struct.
+ *
+ * @author: 1wilkens
+ */
 
 #ifndef ACU_FW_THRESHOLD_H
 #define ACU_FW_THRESHOLD_H

@@ -1,10 +1,10 @@
-//
-// Created by florian on 12/1/16.
-//
+/* incoming_alert.cc
+ * ACU Framework
+ *
+ * <include/acu/incoming_alert.h>
+ */
 
 #include "acu/incoming_alert.h"
-
-#include <iostream>
 
 namespace acu {
 

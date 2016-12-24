@@ -1,8 +1,18 @@
+/* acu.h
+ * ACU Framework
+ *
+ * The ACU is the entry-point to the whole framework. It manages all necessary
+ * services and delegates messages between Receiver, Algorithms and Sender.
+ *
+ * @author: 1wilkens, 0ortmann, 1jost
+ */
+
 #ifndef ACU_FW_ACU_H
 #define ACU_FW_ACU_H
 
 #include "alert_mapper.h"
 #include "aggregation.h"
+#include "alert_mapper.h"
 #include "correlation.h"
 #include "receiver.h"
 #include "sender.h"

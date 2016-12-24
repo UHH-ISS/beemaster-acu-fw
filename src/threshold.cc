@@ -1,6 +1,8 @@
-//
-// Created by florian on 12/1/16.
-//
+/* threshold.cc
+ * ACU Framework
+ *
+ * <include/acu/threshold.h>
+ */
 
 #include "acu/threshold.h"
 

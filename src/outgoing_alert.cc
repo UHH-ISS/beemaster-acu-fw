@@ -1,6 +1,8 @@
-//
-// OutgoingAlert is the basic abstract class for "meta-alerts" sent back from the ACU framework to the Bro-Master.
-//
+/* outgoing_alert.cc
+ * ACU Framework
+ * 
+ * <include/acu/outgoing_alert.h>
+ */
 
 #include "acu/outgoing_alert.h"
 

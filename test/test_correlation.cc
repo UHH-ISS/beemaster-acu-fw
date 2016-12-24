@@ -1,6 +1,10 @@
-//
-// Created by flx on 11.12.16.
-//
+/* test_correlation.cc
+ * ACU Framework (test)
+ *
+ * Tests for basic assign behaviour.
+ *
+ * @author: 0ortmann
+ */
 
 #include "catch.hpp"
 

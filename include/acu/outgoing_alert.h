@@ -1,6 +1,11 @@
-//
-// Created by florian on 12/1/16.
-//
+/* outgoing_alert.h
+ * ACU Framework
+ *
+ * The abstract class OutgoingAlert is used as a result from aggregation
+ * algorithms and are able to produce broker messages.
+ *
+ * @author: 1wilkens, 0ortmann
+ */
 
 #ifndef ACU_FW_OUTGOING_ALERT_H
 #define ACU_FW_OUTGOING_ALERT_H

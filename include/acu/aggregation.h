@@ -1,6 +1,12 @@
-//
-// Created by florian on 12/1/16.
-//
+/* aggregation.h
+ * ACU Framework
+ *
+ * The aggregation algorithms are rather simple algorithms, meant to collect
+ * information from the incoming alerts to eventually trigger the correlation
+ * algorithms.
+ *
+ * @author: 1wilkens, 0ortmann
+ */
 
 #ifndef ACU_FW_AGGREGATIONALGORITHM_H
 #define ACU_FW_AGGREGATIONALGORITHM_H

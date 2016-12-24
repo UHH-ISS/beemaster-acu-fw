@@ -12,7 +12,6 @@ added the [`Makefile`](Makefile). Call `make` to build the project inside the
 
 ### Code-Structure
 
-
 ```
 ├── Makefile                    # Makefile for 'IDE-less' compilation
 │
@@ -31,3 +30,17 @@ added the [`Makefile`](Makefile). Call `make` to build the project inside the
     ├── *.cc
     └── CMakeLists.txt
 ```
+
+### Header Template
+
+```cpp
+/* <filename>
+ * ACU Framework
+ *
+ * <description>
+ *
+ * @author: <influencers>
+ */
+```
+
+See [acu.h](include/acu/acu.h) for an example.

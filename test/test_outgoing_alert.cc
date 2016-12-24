@@ -1,6 +1,10 @@
-//
-// Created by flx on 11.12.16.
-//
+/* test_outgoing_alert.cc
+ * ACU Framework (test)
+ *
+ * Tests for basic assign behaviour and the output to broker message format.
+ *
+ * @author: 0ortmann
+ */
 
 #include <acu/outgoing_alert.h>
 #include "catch.hpp"

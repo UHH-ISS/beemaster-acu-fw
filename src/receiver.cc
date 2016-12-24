@@ -1,12 +1,17 @@
-/*
+/* receiver.cc
+ * ACU Framework
+ * 
  * The ACU Receiver offers to fork and detach an asynchronously receiving broker endpoint.
+ *
+ * <include/acu/receiver.h>
  */
 
 #include "acu/receiver.h"
+
 #include <broker/message_queue.hh>
-#include <sys/select.h>
 #include <future>
 #include <iostream>
+#include <sys/select.h>
 
 namespace acu {
 
