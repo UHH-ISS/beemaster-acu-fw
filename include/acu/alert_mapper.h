@@ -22,7 +22,7 @@ namespace acu {
         /// @param topic    The topic string to identify the message.
         /// @param message  The message to convert.
         /// @return         The correctly mapped message.
-        virtual IncomingAlert* GetAlert(const std::string, const broker::message&) const;
+        virtual IncomingAlert* GetAlert(const std::string*, const broker::message&) const;
     };
 }
 #endif //ACU_FW_ALERT_MAPPER_H

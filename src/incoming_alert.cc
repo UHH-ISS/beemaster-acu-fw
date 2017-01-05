@@ -8,7 +8,8 @@
 
 namespace acu {
 
-    IncomingAlert::IncomingAlert(const broker::message &msg) : message(msg) {
+    IncomingAlert::IncomingAlert(const std::string *topic, const broker::message &msg) : topic(topic), message(msg) {
+        assert(!topic->empty());
         // We need at least 7 items since we directly index into the message
         assert(msg.size() >= 7);
         // TODO: We could also "typecheck" the message fields here to fail early?
@@ -26,33 +27,33 @@ namespace acu {
         return system_clock::now();
     }
 
-    std::string& IncomingAlert::incident_type() {
+    const std::string& IncomingAlert::incident_type() const {
         assert(broker::is<std::string>(message.at(1)));
         return *broker::get<std::string>(message.at(1));
     }
 
-    std::string& IncomingAlert::protocol() {
+    const std::string& IncomingAlert::protocol() const {
         assert(broker::is<std::string>(message.at(2)));
         return *broker::get<std::string>(message.at(2));
     }
 
-    std::string& IncomingAlert::source_ip() {
+    const std::string& IncomingAlert::source_ip() const {
         assert(broker::is<std::string>(message.at(3)));
         return *broker::get<std::string>(message.at(3));
     }
 
-    port_t& IncomingAlert::source_port() const {
+    const port_t& IncomingAlert::source_port() const {
         // Broker only knows one uint type which translates to uint64_t
         assert(broker::is<uint64_t >(message.at(4)));
         return (port_t&)(*broker::get<uint64_t>(message.at(4)));
     }
 
-    std::string& IncomingAlert::destination_ip() {
+    const std::string& IncomingAlert::destination_ip() const {
         assert(broker::is<std::string>(message.at(5)));
         return *broker::get<std::string>(message.at(5));
     }
 
-    port_t& IncomingAlert::destination_port() const {
+    const port_t& IncomingAlert::destination_port() const {
         assert(broker::is<uint64_t>(message.at(6)));
         return (port_t&)(*broker::get<uint64_t>(message.at(6)));
     }

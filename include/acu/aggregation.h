@@ -25,7 +25,7 @@ namespace acu {
         Storage *storage;
         std::vector<Threshold> *thresholds;
 
-        virtual bool Invoke(IncomingAlert *alert) = 0;
+        virtual bool Invoke(const IncomingAlert *alert) = 0;
     };
 }
 
