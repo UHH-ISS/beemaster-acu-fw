@@ -1,6 +1,6 @@
 /* test_receiver.cc
  * ACU Framework (test)
- * 
+ *
  * Tests default assignment behaviour.
  * Currently only positive tests are implemented. Negative tests are not
  * possible yet.
@@ -38,6 +38,10 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
     auto mapper = new acu::AlertMapper();
     auto queue = new std::queue<acu::IncomingAlert*>();
 
+    auto time_stamp = std::chrono::system_clock::now();
+    auto val = std::chrono::duration_cast<std::chrono::duration<double>>(time_stamp.time_since_epoch());
+    auto broker_stamp = broker::time_point{val.count()};
+
     SECTION("Testing Receiver receive single queue success") {
         auto local_port = (acu::port_t)9980;
         auto rec = acu::Receiver(local_ip, local_port, &topics, mapper);
@@ -49,7 +53,16 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         rec.Listen(queue);
         usleep(500 * 1000);
 
-        auto msg = broker::message{"testmessage", "incident", "proto", "4", "5", "6", "7"};
+        auto r = broker::record({
+            broker::record::field(broker_stamp),
+            broker::record::field("incident"),
+            broker::record::field("proto"),
+            broker::record::field("127.0.0.1"),
+            broker::record::field((acu::port_t)8080),
+            broker::record::field("192.168.0.1"),
+            broker::record::field((acu::port_t)9090)
+        });
+        auto msg = broker::message{r};
         auto sender = broker::endpoint("sender");
         sender.peer(local_ip, local_port);
 
@@ -78,9 +91,36 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         rec.Listen(queue);
         usleep(500 * 1000);
 
-        auto msg1 = broker::message{"msg1", "2", "3", "4", "5", "6", "7"};
-        auto msg2 = broker::message{"msg2", "2", "3", "4", "5", "6", "7"};
-        auto msg3 = broker::message{"msg3", "2", "3", "4", "5", "6", "7"};
+        auto r1 = broker::record({
+            broker::record::field(broker_stamp),
+            broker::record::field("msg1"),
+            broker::record::field("proto"),
+            broker::record::field("127.0.0.1"),
+            broker::record::field((acu::port_t)8080),
+            broker::record::field("192.168.0.1"),
+            broker::record::field((acu::port_t)9090)
+        });
+        auto r2 = broker::record({
+            broker::record::field(broker_stamp),
+            broker::record::field("msg2"),
+            broker::record::field("proto"),
+            broker::record::field("127.0.0.1"),
+            broker::record::field((acu::port_t)8080),
+            broker::record::field("192.168.0.1"),
+            broker::record::field((acu::port_t)9090)
+        });
+        auto r3 = broker::record({
+            broker::record::field(broker_stamp),
+            broker::record::field("msg3"),
+            broker::record::field("proto"),
+            broker::record::field("127.0.0.1"),
+            broker::record::field((acu::port_t)8080),
+            broker::record::field("192.168.0.1"),
+            broker::record::field((acu::port_t)9090)
+        });
+        auto msg1 = broker::message{r1};
+        auto msg2 = broker::message{r2};
+        auto msg3 = broker::message{r3};
         auto sender = broker::endpoint("sender");
         sender.peer(local_ip, local_port);
 

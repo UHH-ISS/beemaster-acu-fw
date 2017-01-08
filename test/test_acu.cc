@@ -96,6 +96,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     MockAggregation *agg = new MockAggregation(storage, thresholds);
     auto mockAlertName = "META ALERT";
     auto mockAlertTime = std::chrono::system_clock::now();
+    auto mockAlertTimeVal = std::chrono::duration_cast<std::chrono::duration<double>>(mockAlertTime.time_since_epoch());
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(mockAlertName, mockAlertTime);
     MockCorrelation *corr = new MockCorrelation(storage, thresholds, mockAlert);
 
@@ -129,15 +130,16 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
 
     SECTION("Test successful roundtrip") {
 
-        auto msg = broker::message{
-                "TIME",
-                "INCIDENT_NAME",
-                "PROTOCOL",
-                "SOURCE_IP",
-                1337,
-                "DEST_IP",
-                1338
-        };
+        auto rec = broker::record({
+                broker::record::field(broker::time_point{mockAlertTimeVal.count()}),
+                broker::record::field("INCIDENT_NAME"),
+                broker::record::field("PROTOCOL"),
+                broker::record::field("SOURCE_IP"),
+                broker::record::field(1337),
+                broker::record::field("DEST_IP"),
+                broker::record::field(1338)
+        });
+        auto msg = broker::message{rec};
         auto inc_alert_sender = broker::endpoint("incoming alert sender");
 
         std::cout << "ACU test peer" <<std::endl;
