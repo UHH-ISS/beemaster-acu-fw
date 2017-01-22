@@ -3,9 +3,6 @@
  *
  * Dataflow test for the ACU class.
  *
- * TODO: NOTE: This test works, because the hardcoded addresses inside the ACU are known
- * TODO: Note: Sender on 127.0.0.1:9998 and receiver on 127.0.0.1:9999 FIXME
- *
  * @author: 0ortmann
  */
 
@@ -78,7 +75,7 @@ TEST_CASE("Testing Acu class layout", "[acu]") {
     REQUIRE_FALSE(std::is_pod<acu::Acu>());
 }
 
-TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
+TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
 
     // This is kind of a "framework integration test"
 
@@ -110,7 +107,9 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[Acu]") {
     broker::endpoint meta_alert_rec("Meta Alert Receiver");
     broker::message_queue meta_alert_queue(topic, meta_alert_rec);
 
-    bool listening = meta_alert_rec.listen(9998, "127.0.0.1");
+    acu->SetReceiverInfo("127.0.0.1", 9999);    // to make sure
+    acu->SetSenderInfo("127.0.0.1", 9997);      // to prove a point ;)
+    bool listening = meta_alert_rec.listen(9997, "127.0.0.1");
     REQUIRE(listening);
 
     acu->Run();
