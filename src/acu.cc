@@ -39,7 +39,6 @@ namespace acu {
             topics->push_back(pair.first);
         }
 
-        // TODO: config?
         receiver = new Receiver(recv_address, recv_port, topics, mapper);
         sender = new Sender(send_address, send_port);
 
