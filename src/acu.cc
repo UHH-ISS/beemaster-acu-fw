@@ -9,6 +9,15 @@
 #include <iostream>
 
 namespace acu {
+    void Acu::SetReceiverInfo(std::string address, port_t port) {
+        recv_address = address;
+        recv_port = port;
+    }
+
+    void Acu::SetSenderInfo(std::string address, port_t port) {
+        send_address = address;
+        send_port = port;
+    }
 
     void Acu::Register(std::vector<std::string> *topics, Aggregation *aggregation, Correlation *correlation) {
         // asserts
@@ -30,9 +39,8 @@ namespace acu {
             topics->push_back(pair.first);
         }
 
-        // TODO: config?
-        receiver = new Receiver("127.0.0.1", 9999, topics, mapper);
-        sender = new Sender("127.0.0.1", 9998);
+        receiver = new Receiver(recv_address, recv_port, topics, mapper);
+        sender = new Sender(send_address, send_port);
 
         // Async fork a listening thread
         receiver->Listen(alertQueue);
