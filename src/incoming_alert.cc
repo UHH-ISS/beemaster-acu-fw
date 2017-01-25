@@ -9,15 +9,24 @@
 namespace acu {
 
     IncomingAlert::IncomingAlert(const std::string *topic, const broker::message &msg) : topic(topic), message(msg) {
+        /* The message format uses a mandatory record as the first field of the message
+         * which contains 5 fields which are present in every alert. */
+
+        // Require at least one field
         assert(!topic->empty());
-        // We need at least 7 items since we directly index into the message
-        assert(msg.size() >= 7);
+        assert(msg.size() >= 1);
+
+        // Require this field to be a broker::record with exactly 5 items
+        assert(broker::is<broker::record>(message[0]));
+        auto rec = broker::get<broker::record>(message[0]);
+        assert(rec->size() == 5);
         // TODO: We could also "typecheck" the message fields here to fail early?
     }
 
     time_point<system_clock> IncomingAlert::timestamp() {
-        assert(broker::is<broker::time_point>(message.at(0)));
-        auto val = broker::get<broker::time_point>(message.at(0))->value;
+        auto rec = broker::get<broker::record>(message[0]);
+        assert(broker::is<broker::time_point>(rec->get(0).get()));
+        auto val = broker::get<broker::time_point>(rec->get(0).get())->value;
         auto dur = duration<double, std::ratio<1>>{val};
         //TODO: I KNOW this is system_clock.time_since_epoch cast to duration<double>
         // but I cannot figure out how to construct the time_point from this
@@ -27,35 +36,29 @@ namespace acu {
         return system_clock::now();
     }
 
-    const std::string& IncomingAlert::incident_type() const {
-        assert(broker::is<std::string>(message.at(1)));
-        return *broker::get<std::string>(message.at(1));
-    }
-
-    const std::string& IncomingAlert::protocol() const {
-        assert(broker::is<std::string>(message.at(2)));
-        return *broker::get<std::string>(message.at(2));
-    }
-
     const std::string& IncomingAlert::source_ip() const {
-        assert(broker::is<std::string>(message.at(3)));
-        return *broker::get<std::string>(message.at(3));
+        auto rec = broker::get<broker::record>(message[0]);
+        assert(broker::is<std::string>(rec->get(1).get()));
+        return *broker::get<std::string>(rec->get(1).get());
     }
 
     const port_t& IncomingAlert::source_port() const {
+        auto rec = broker::get<broker::record>(message[0]);
         // Broker only knows one uint type which translates to uint64_t
-        assert(broker::is<uint64_t >(message.at(4)));
-        return (port_t&)(*broker::get<uint64_t>(message.at(4)));
+        assert(broker::is<uint64_t >(rec->get(2).get()));
+        return (port_t&)(*broker::get<uint64_t>(rec->get(2).get()));
     }
 
     const std::string& IncomingAlert::destination_ip() const {
-        assert(broker::is<std::string>(message.at(5)));
-        return *broker::get<std::string>(message.at(5));
+        auto rec = broker::get<broker::record>(message[0]);
+        assert(broker::is<std::string>(rec->get(3).get()));
+        return *broker::get<std::string>(rec->get(3).get());
     }
 
     const port_t& IncomingAlert::destination_port() const {
-        assert(broker::is<uint64_t>(message.at(6)));
-        return (port_t&)(*broker::get<uint64_t>(message.at(6)));
+        auto rec = broker::get<broker::record>(message[0]);
+        assert(broker::is<uint64_t>(rec->get(4).get()));
+        return (port_t&)(*broker::get<uint64_t>(rec->get(4).get()));
     }
 
     bool IncomingAlert::operator==(const IncomingAlert &rhs) const {

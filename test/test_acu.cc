@@ -19,7 +19,7 @@ class MockStorage : public acu::Storage {
         bool persisted;
         void Persist(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
-            alert->protocol();
+            alert->source_ip();
             persisted = true;
         }
 };
@@ -44,7 +44,7 @@ class MockAggregation : public acu::Aggregation {
 
         bool Invoke(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
-            alert->protocol();
+            alert->source_ip();
             ++invokes;
             return invokes >= thresholds->at(0).count;
         }
@@ -93,6 +93,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     MockAggregation *agg = new MockAggregation(storage, thresholds);
     auto mockAlertName = "META ALERT";
     auto mockAlertTime = std::chrono::system_clock::now();
+    auto mockAlertTimeVal = std::chrono::duration_cast<std::chrono::duration<double>>(mockAlertTime.time_since_epoch());
     MockOutgoingAlert *mockAlert = new MockOutgoingAlert(mockAlertName, mockAlertTime);
     MockCorrelation *corr = new MockCorrelation(storage, thresholds, mockAlert);
 
@@ -128,15 +129,14 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
 
     SECTION("Test successful roundtrip") {
 
-        auto msg = broker::message{
-                "TIME",
-                "INCIDENT_NAME",
-                "PROTOCOL",
-                "SOURCE_IP",
-                1337,
-                "DEST_IP",
-                1338
-        };
+        auto rec = broker::record({
+                broker::record::field(broker::time_point{mockAlertTimeVal.count()}),
+                broker::record::field("SOURCE_IP"),
+                broker::record::field(1337),
+                broker::record::field("DEST_IP"),
+                broker::record::field(1338)
+        });
+        auto msg = broker::message{rec};
         auto inc_alert_sender = broker::endpoint("incoming alert sender");
 
         std::cout << "ACU test peer" <<std::endl;
