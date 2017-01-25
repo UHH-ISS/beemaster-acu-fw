@@ -19,7 +19,7 @@ class MockStorage : public acu::Storage {
         bool persisted;
         void Persist(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
-            alert->protocol();
+            alert->source_ip();
             persisted = true;
         }
 };
@@ -44,7 +44,7 @@ class MockAggregation : public acu::Aggregation {
 
         bool Invoke(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert
-            alert->protocol();
+            alert->source_ip();
             ++invokes;
             return invokes >= thresholds->at(0).count;
         }
@@ -131,8 +131,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
 
         auto rec = broker::record({
                 broker::record::field(broker::time_point{mockAlertTimeVal.count()}),
-                broker::record::field("INCIDENT_NAME"),
-                broker::record::field("PROTOCOL"),
                 broker::record::field("SOURCE_IP"),
                 broker::record::field(1337),
                 broker::record::field("DEST_IP"),

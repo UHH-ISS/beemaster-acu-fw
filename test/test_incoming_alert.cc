@@ -22,8 +22,6 @@ TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
     auto topic = new std::string("some topic");
     auto rec = record({
             record::field(broker_stamp),
-            record::field("incident"),
-            record::field("proto"),
             record::field("127.0.0.1"),
             record::field((acu::port_t)8080),
             record::field("192.168.0.1"),
@@ -37,8 +35,6 @@ TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
     REQUIRE(alert.topic == topic);
     REQUIRE(*alert.topic == *topic);
     REQUIRE_FALSE(alert.timestamp() == time_stamp);
-    REQUIRE(alert.incident_type() == "incident");
-    REQUIRE(alert.protocol() == "proto");
     REQUIRE(alert.source_ip() == "127.0.0.1");
     REQUIRE(alert.source_port() == 8080);
     REQUIRE(alert.destination_ip() == "192.168.0.1");

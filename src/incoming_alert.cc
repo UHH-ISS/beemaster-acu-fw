@@ -10,16 +10,16 @@ namespace acu {
 
     IncomingAlert::IncomingAlert(const std::string *topic, const broker::message &msg) : topic(topic), message(msg) {
         /* The message format uses a mandatory record as the first field of the message
-         * which contains 7 fields which are present in every alert. */
+         * which contains 5 fields which are present in every alert. */
 
         // Require at least one field
         assert(!topic->empty());
         assert(msg.size() >= 1);
 
-        // Require this field to be a broker::record with exactly 7 items
+        // Require this field to be a broker::record with exactly 5 items
         assert(broker::is<broker::record>(message[0]));
         auto rec = broker::get<broker::record>(message[0]);
-        assert(rec->size() == 7);
+        assert(rec->size() == 5);
         // TODO: We could also "typecheck" the message fields here to fail early?
     }
 
@@ -36,41 +36,29 @@ namespace acu {
         return system_clock::now();
     }
 
-    const std::string& IncomingAlert::incident_type() const {
+    const std::string& IncomingAlert::source_ip() const {
         auto rec = broker::get<broker::record>(message[0]);
         assert(broker::is<std::string>(rec->get(1).get()));
         return *broker::get<std::string>(rec->get(1).get());
     }
 
-    const std::string& IncomingAlert::protocol() const {
+    const port_t& IncomingAlert::source_port() const {
         auto rec = broker::get<broker::record>(message[0]);
-        assert(broker::is<std::string>(rec->get(2).get()));
-        return *broker::get<std::string>(rec->get(2).get());
+        // Broker only knows one uint type which translates to uint64_t
+        assert(broker::is<uint64_t >(rec->get(2).get()));
+        return (port_t&)(*broker::get<uint64_t>(rec->get(2).get()));
     }
 
-    const std::string& IncomingAlert::source_ip() const {
+    const std::string& IncomingAlert::destination_ip() const {
         auto rec = broker::get<broker::record>(message[0]);
         assert(broker::is<std::string>(rec->get(3).get()));
         return *broker::get<std::string>(rec->get(3).get());
     }
 
-    const port_t& IncomingAlert::source_port() const {
-        auto rec = broker::get<broker::record>(message[0]);
-        // Broker only knows one uint type which translates to uint64_t
-        assert(broker::is<uint64_t >(rec->get(4).get()));
-        return (port_t&)(*broker::get<uint64_t>(rec->get(4).get()));
-    }
-
-    const std::string& IncomingAlert::destination_ip() const {
-        auto rec = broker::get<broker::record>(message[0]);
-        assert(broker::is<std::string>(rec->get(5).get()));
-        return *broker::get<std::string>(rec->get(5).get());
-    }
-
     const port_t& IncomingAlert::destination_port() const {
         auto rec = broker::get<broker::record>(message[0]);
-        assert(broker::is<uint64_t>(rec->get(6).get()));
-        return (port_t&)(*broker::get<uint64_t>(rec->get(6).get()));
+        assert(broker::is<uint64_t>(rec->get(4).get()));
+        return (port_t&)(*broker::get<uint64_t>(rec->get(4).get()));
     }
 
     bool IncomingAlert::operator==(const IncomingAlert &rhs) const {

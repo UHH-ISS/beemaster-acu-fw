@@ -30,12 +30,6 @@ namespace acu {
         // Timestamp indicating when the alert occurred
         time_point<system_clock> timestamp();
 
-        // Incident type (free text)
-        const std::string& incident_type() const;
-        // Protocol of the incident
-        //TODO: Is this tcp/udp or ftp/http/etc?
-        const std::string& protocol() const;
-
         // Source IP of the connection that triggered this alert
         const std::string& source_ip() const;
         // Source port of the connection that triggered this alert

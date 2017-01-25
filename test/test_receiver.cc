@@ -55,8 +55,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
         auto r = broker::record({
             broker::record::field(broker_stamp),
-            broker::record::field("incident"),
-            broker::record::field("proto"),
             broker::record::field("127.0.0.1"),
             broker::record::field((acu::port_t)8080),
             broker::record::field("192.168.0.1"),
@@ -75,8 +73,8 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         REQUIRE(queue->size() == 1);
         REQUIRE(*(queue->front()->topic) == topics[0]);
         REQUIRE_FALSE(*(queue->front()->topic) == topics[1]);
-        REQUIRE(queue->front()->incident_type() == "incident");
-        REQUIRE(queue->front()->protocol() == "proto");
+        REQUIRE(queue->front()->source_ip() == "127.0.0.1");
+        REQUIRE(queue->front()->source_port() == 8080);
     }
 
     SECTION("Testing Receiver receive multiple queues success") {
@@ -93,8 +91,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
 
         auto r1 = broker::record({
             broker::record::field(broker_stamp),
-            broker::record::field("msg1"),
-            broker::record::field("proto"),
             broker::record::field("127.0.0.1"),
             broker::record::field((acu::port_t)8080),
             broker::record::field("192.168.0.1"),
@@ -102,8 +98,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         });
         auto r2 = broker::record({
             broker::record::field(broker_stamp),
-            broker::record::field("msg2"),
-            broker::record::field("proto"),
             broker::record::field("127.0.0.1"),
             broker::record::field((acu::port_t)8080),
             broker::record::field("192.168.0.1"),
@@ -111,8 +105,6 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         });
         auto r3 = broker::record({
             broker::record::field(broker_stamp),
-            broker::record::field("msg3"),
-            broker::record::field("proto"),
             broker::record::field("127.0.0.1"),
             broker::record::field((acu::port_t)8080),
             broker::record::field("192.168.0.1"),
