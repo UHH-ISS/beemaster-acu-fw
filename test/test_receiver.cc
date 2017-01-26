@@ -50,7 +50,7 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         // One queue will receive, that must result in triggering this tests callback exactly once
         REQUIRE(queue->size() == 0);
 
-        auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
+        auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH);
         sender.listen(local_port, local_ip);
         usleep(100 * 1000);
 
@@ -87,7 +87,7 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         // All 3 queue swill receive, that must result in triggering this tests callback
         // exactly 3 times with three different messages.
         REQUIRE(queue->size() == 0);
-        auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
+        auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH);
         sender.listen(local_port, local_ip);
         usleep(100 * 1000);
 
