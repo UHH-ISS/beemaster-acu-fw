@@ -34,7 +34,7 @@ namespace acu {
                 : address(address), port(port), topics(topics), mapper(mapper) {};
 
         // TODO: The broker message could/should be a reference to transfer ownership to the acu
-        void Listen(std::queue<IncomingAlert*>*);
+        void Peer(std::queue<IncomingAlert*>*);
 
     private:
         std::string address;

@@ -43,7 +43,7 @@ namespace acu {
         sender = new Sender(send_address, send_port);
 
         // Async fork a listening thread
-        receiver->Listen(alertQueue);
+        receiver->Peer(alertQueue);
     }
 
     void Acu::CheckForAlerts() {

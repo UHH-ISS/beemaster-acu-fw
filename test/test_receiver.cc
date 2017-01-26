@@ -50,8 +50,9 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         // One queue will receive, that must result in triggering this tests callback exactly once
         REQUIRE(queue->size() == 0);
 
-        rec.Listen(queue);
-        usleep(500 * 1000);
+        auto sender = broker::endpoint("sender");
+        sender.listen(local_port, local_ip);
+        usleep(100 * 1000);
 
         auto r = broker::record({
             broker::record::field(broker_stamp),
@@ -61,14 +62,15 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
             broker::record::field((acu::port_t)9090)
         });
         auto msg = broker::message{r};
-        auto sender = broker::endpoint("sender");
-        sender.peer(local_ip, local_port);
 
-        auto status = sender.outgoing_connection_status().need_pop().front().status;
-        REQUIRE(status == broker::outgoing_connection_status::tag::established);
+        rec.Peer(queue);
+
+        auto status = sender.incoming_connection_status().need_pop().front().status;
+        REQUIRE(status == broker::incoming_connection_status::tag::established);
+        usleep(100 * 1000);
 
         sender.send(topics[0], msg);
-        usleep(500 * 1000);
+        usleep(100 * 1000);
 
         REQUIRE(queue->size() == 1);
         REQUIRE(*(queue->front()->topic) == topics[0]);
@@ -85,9 +87,9 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         // All 3 queue swill receive, that must result in triggering this tests callback
         // exactly 3 times with three different messages.
         REQUIRE(queue->size() == 0);
-
-        rec.Listen(queue);
-        usleep(500 * 1000);
+        auto sender = broker::endpoint("sender");
+        sender.listen(local_port, local_ip);
+        usleep(100 * 1000);
 
         auto r1 = broker::record({
             broker::record::field(broker_stamp),
@@ -113,17 +115,17 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         auto msg1 = broker::message{r1};
         auto msg2 = broker::message{r2};
         auto msg3 = broker::message{r3};
-        auto sender = broker::endpoint("sender");
-        sender.peer(local_ip, local_port);
 
-        auto status = sender.outgoing_connection_status().need_pop().front().status;
-        REQUIRE(status == broker::outgoing_connection_status::tag::established);
+        rec.Peer(queue);
+        auto status = sender.incoming_connection_status().need_pop().front().status;
+        REQUIRE(status == broker::incoming_connection_status::tag::established);
 
+        usleep(100 * 1000);
         sender.send(topics[0], msg1);
         sender.send(topics[1], msg2);
         sender.send(topics[2], msg3);
 
-        usleep(500 * 1000);
+        usleep(100 * 1000);
 
         REQUIRE(queue->size() == 3);
         for (int i = 0; i < 3; ++i) {
