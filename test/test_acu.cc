@@ -105,7 +105,8 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     REQUIRE_FALSE(mockAlert->toMessageCalled);
 
     // remote bro-broker "mock" via localhost
-    broker::endpoint meta_alert_rec("Meta Alert Receiver");
+    broker::endpoint meta_alert_rec("Meta Alert Receiver",
+                                    broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
     broker::message_queue meta_alert_queue(topic, meta_alert_rec);
 
     acu->SetReceiverInfo("127.0.0.1", 9999);    // to make sure
@@ -113,9 +114,11 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     bool listening = meta_alert_rec.listen(9997, "127.0.0.1");
     REQUIRE(listening);
 
-    auto inc_alert_sender = broker::endpoint("incoming alert sender");
+    auto inc_alert_sender = broker::endpoint("incoming alert sender",
+                                             broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
 
     inc_alert_sender.listen(9999, "127.0.0.1");
+    usleep(100 * 1000);
 
     std::cout << "ACU test peer" <<std::endl;
     acu->Run();

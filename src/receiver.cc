@@ -17,12 +17,13 @@ namespace acu {
 
     void DoPeer(std::string address, port_t port, std::vector<std::string> *topics,
                   AlertMapper *mapper, std::queue<IncomingAlert*> *alertQueue) {
-        auto endpoint = new broker::endpoint(ENDPOINT_NAME, broker::AUTO_ADVERTISE);
+        auto endpoint = new broker::endpoint(ENDPOINT_NAME,
+                                             broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
         endpoint->peer(address.c_str(), port);
 
         auto queues = new std::vector<broker::message_queue*>();
         for (auto &topic : *topics) {
-            queues->push_back(new broker::message_queue(topic, *endpoint, broker::LOCAL_SCOPE));
+            queues->push_back(new broker::message_queue(topic, *endpoint, broker::GLOBAL_SCOPE));
         }
 
         fd_set fds;
