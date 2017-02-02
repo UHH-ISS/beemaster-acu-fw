@@ -27,7 +27,7 @@ TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
             record::field("192.168.0.1"),
             record::field((acu::port_t)9090)
     });
-    auto msg = message{rec};
+    auto msg = message{"acu/test_event", rec};
     auto alert = acu::IncomingAlert(topic, msg);
 
     // TODO: the following test is incomplete, this requires final implementation of the timestamp method.
