@@ -54,8 +54,9 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
         acu::port_t local_port = 9970;
 
         // remote bro-broker "mock" via localhost
-        broker::endpoint rec_ep("Receiver Endpoint");
-        broker::message_queue queue(alertName, rec_ep);
+        broker::endpoint rec_ep("Receiver Endpoint",
+                                broker::AUTO_ROUTING | broker::AUTO_ADVERTISE);
+        broker::message_queue queue(alertName, rec_ep, broker::GLOBAL_SCOPE);
 
         bool listening = rec_ep.listen(local_port, local_ip.c_str());
         REQUIRE(listening);

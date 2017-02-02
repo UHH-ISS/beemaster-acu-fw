@@ -7,6 +7,7 @@
 #include "acu/acu.h"
 
 #include <iostream>
+#include <broker/broker.hh>
 
 namespace acu {
     void Acu::SetReceiverInfo(std::string address, port_t port) {
@@ -34,6 +35,7 @@ namespace acu {
     }
 
     void Acu::Run() {
+        broker::init();
         auto topics = new std::vector<std::string>(correlations->size());
         for (auto &pair : *correlations) {
             topics->push_back(pair.first);
@@ -43,7 +45,7 @@ namespace acu {
         sender = new Sender(send_address, send_port);
 
         // Async fork a listening thread
-        receiver->Listen(alertQueue);
+        receiver->Peer(alertQueue);
     }
 
     void Acu::CheckForAlerts() {

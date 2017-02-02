@@ -15,17 +15,15 @@
 
 namespace acu {
 
-    void DoListen(std::string address, port_t port, std::vector<std::string> *topics,
+    void DoPeer(std::string address, port_t port, std::vector<std::string> *topics,
                   AlertMapper *mapper, std::queue<IncomingAlert*> *alertQueue) {
-        auto endpoint = new broker::endpoint(ENDPOINT_NAME, broker::AUTO_ADVERTISE);
-        if (!endpoint->listen(port, address.c_str())) {
-            //TODO: report error?
-            return;
-        }
+        auto endpoint = new broker::endpoint(ENDPOINT_NAME,
+                                             broker::AUTO_ROUTING | broker::AUTO_PUBLISH | broker::AUTO_ADVERTISE);
+        endpoint->peer(address.c_str(), port);
 
         auto queues = new std::vector<broker::message_queue*>();
         for (auto &topic : *topics) {
-            queues->push_back(new broker::message_queue(topic, *endpoint, broker::LOCAL_SCOPE));
+            queues->push_back(new broker::message_queue(topic, *endpoint, broker::GLOBAL_SCOPE));
         }
 
         fd_set fds;
@@ -59,9 +57,9 @@ namespace acu {
         }
     }
 
-    void Receiver::Listen(std::queue<IncomingAlert*> *queue) {
+    void Receiver::Peer(std::queue<IncomingAlert*> *queue) {
         // Fork an asynchronous receiver, return control flow / execution to caller:
-        std::thread(DoListen, address, port, topics, mapper, queue).detach();
+        std::thread(DoPeer, address, port, topics, mapper, queue).detach();
         return;
     }
 }

@@ -13,10 +13,11 @@
 
 namespace acu {
     // This could also be set via config file?
-    std::string const ENDPOINT_NAME = "ACU Sender";
+    std::string const ENDPOINT_NAME = "acu_sender";
 
     Sender::Sender(std::string destination, port_t port) :
-            endpoint(new broker::endpoint(ENDPOINT_NAME)) {
+            endpoint(new broker::endpoint(ENDPOINT_NAME,
+                                          broker::AUTO_ROUTING | broker::AUTO_PUBLISH)) {
 
         // default retry interval is 5 seconds. Maybe we want to change that?
         endpoint->peer(destination, port);

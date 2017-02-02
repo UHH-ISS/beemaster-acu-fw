@@ -105,19 +105,28 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     REQUIRE_FALSE(mockAlert->toMessageCalled);
 
     // remote bro-broker "mock" via localhost
-    broker::endpoint meta_alert_rec("Meta Alert Receiver");
-    broker::message_queue meta_alert_queue(topic, meta_alert_rec);
+    broker::endpoint meta_alert_rec("Meta Alert Receiver",
+                                    broker::AUTO_ROUTING | broker::AUTO_ADVERTISE);
+    broker::message_queue meta_alert_queue(topic, meta_alert_rec, broker::GLOBAL_SCOPE);
 
     acu->SetReceiverInfo("127.0.0.1", 9999);    // to make sure
     acu->SetSenderInfo("127.0.0.1", 9997);      // to prove a point ;)
     bool listening = meta_alert_rec.listen(9997, "127.0.0.1");
     REQUIRE(listening);
 
+    auto inc_alert_sender = broker::endpoint("incoming alert sender",
+                                             broker::AUTO_ROUTING | broker::AUTO_PUBLISH);
+
+    inc_alert_sender.listen(9999, "127.0.0.1");
+    usleep(100 * 1000);
+
+    std::cout << "ACU test peer" <<std::endl;
     acu->Run();
-    // now we expect to have our ACU receiver listening on 127.0.0.1:9999
-    // and a mocked meta-alert receiver listening on 127.0.0.1:9998
-    // our ACU sender will try to bind against the meta-alert receiver
-    // TODO: those addresses are hardcoded. The test will break if they get configurable
+
+    // now we expect to have our ACU running, with a receiver that
+    // peers against the inc_alert_sender on 127.0.0.1:9999
+    // and a mocked meta-alert-receiver listening on 127.0.0.1:9998
+    // to which out ACU sender will try to bind against
 
     // let everything take its time...!
     usleep(500 * 1000);
@@ -137,14 +146,10 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
                 broker::record::field(1338)
         });
         auto msg = broker::message{rec};
-        auto inc_alert_sender = broker::endpoint("incoming alert sender");
 
-        std::cout << "ACU test peer" <<std::endl;
-        inc_alert_sender.peer("127.0.0.1", 9999);
-
-        // the fake incoming alert sender must be able to bind against our ACU receiver
-        REQUIRE(inc_alert_sender.outgoing_connection_status().need_pop().front().status
-                == broker::outgoing_connection_status::tag::established);
+        // the fake incoming alert sender must have received a peer from our receiver
+        REQUIRE(inc_alert_sender.incoming_connection_status().need_pop().front().status
+                == broker::incoming_connection_status::tag::established);
 
         inc_alert_sender.send(topic, msg);
         usleep(1000*300);
