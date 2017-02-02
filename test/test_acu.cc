@@ -145,7 +145,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
                 broker::record::field("DEST_IP"),
                 broker::record::field(1338)
         });
-        auto msg = broker::message{rec};
+        auto msg = broker::message{"acu/test_event", rec};
 
         // the fake incoming alert sender must have received a peer from our receiver
         REQUIRE(inc_alert_sender.incoming_connection_status().need_pop().front().status

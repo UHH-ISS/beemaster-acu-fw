@@ -29,6 +29,7 @@ TEST_CASE("Testing Receiver class layout", "[receiver]") {
 
 TEST_CASE("Testing Receiver receive", "[receiver]") {
     // Setup
+    auto event_name = "acu/test_event";
     auto topics = std::vector<std::string>{
         "topic1",
         "topic2",
@@ -61,7 +62,7 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
             broker::record::field("192.168.0.1"),
             broker::record::field((acu::port_t)9090)
         });
-        auto msg = broker::message{r};
+        auto msg = broker::message{event_name, r};
 
         rec.Peer(queue);
 
@@ -112,9 +113,9 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
             broker::record::field("192.168.0.1"),
             broker::record::field((acu::port_t)9090)
         });
-        auto msg1 = broker::message{r1};
-        auto msg2 = broker::message{r2};
-        auto msg3 = broker::message{r3};
+        auto msg1 = broker::message{event_name, r1};
+        auto msg2 = broker::message{event_name, r2};
+        auto msg3 = broker::message{event_name, r3};
 
         rec.Peer(queue);
         auto status = sender.incoming_connection_status().need_pop().front().status;
