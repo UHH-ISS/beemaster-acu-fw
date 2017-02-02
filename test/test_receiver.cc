@@ -80,8 +80,42 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         REQUIRE(queue->front()->source_port() == 8080);
     }
 
-    SECTION("Testing Receiver receive multiple queues success") {
+    SECTION("Testing Receiver drops invalid messages") {
         auto local_port = (acu::port_t)9981;
+        auto rec = acu::Receiver(local_ip, local_port, &topics, mapper);
+
+        // Receiver was created with 3 known topics, so 3 queues are registered.
+        // One queue will receive, that must result in triggering this tests callback exactly once
+        REQUIRE(queue->size() == 0);
+
+        auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH);
+        sender.listen(local_port, local_ip);
+        usleep(100 * 1000);
+
+        auto r = broker::record({
+            broker::record::field(broker_stamp),
+            broker::record::field("127.0.0.1"),
+            broker::record::field((acu::port_t)8080),
+            broker::record::field("192.168.0.1"),
+            broker::record::field((acu::port_t)9090)
+        });
+        auto msg = broker::message{r};
+
+        rec.Peer(queue);
+
+        auto status = sender.incoming_connection_status().need_pop().front().status;
+        REQUIRE(status == broker::incoming_connection_status::tag::established);
+        usleep(100 * 1000);
+
+        sender.send(topics[0], msg);
+        usleep(100 * 1000);
+
+        // Invalid message gets dropped -> no entry in queue
+        REQUIRE(queue->size() == 0);
+    }
+
+    SECTION("Testing Receiver receive multiple queues success") {
+        auto local_port = (acu::port_t)9982;
         auto rec = acu::Receiver(local_ip, local_port, &topics, mapper);
 
         // Receiver was created with 3 known topics, so 3 queues are registered.

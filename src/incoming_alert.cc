@@ -14,15 +14,24 @@ namespace acu {
         /* The message format uses a mandatory record as the second field of the message
          * which contains 5 fields which are present in every alert. */
 
+        // Require a valid topid
+        if (topic == nullptr || topic->empty()) {
+            throw new std::invalid_argument("topic");
+        }
+
         // Require at least one field
-        assert(!topic->empty());
-        assert(msg.size() >= 2);
+        if (message.size() < 2) {
+           throw new std::invalid_argument("msg");
+        }
 
         // Require this field to be a broker::record with exactly 5 items
-        assert(broker::is<broker::record>(message[1]));
+        if (!broker::is<broker::record>(message[1])) {
+            throw new std::invalid_argument("msg");
+        }
         auto rec = broker::get<broker::record>(message[1]);
-        assert(rec->size() == 5);
-        // TODO: We could also "typecheck" the message fields here to fail early?
+        if (rec->size() != 5) {
+            throw new std::invalid_argument("msg");
+        }
     }
 
     time_point<system_clock> IncomingAlert::timestamp() {

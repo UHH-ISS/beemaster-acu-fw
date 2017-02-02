@@ -1,6 +1,6 @@
 /* receiver.cc
  * ACU Framework
- * 
+ *
  * The ACU Receiver offers to fork and detach an asynchronously receiving broker endpoint.
  *
  * <include/acu/receiver.h>
@@ -46,9 +46,15 @@ namespace acu {
                     auto topic = q->get_topic_prefix();
                     if (q->get_topic_prefix() != "") {
                         for (auto &msg : q->want_pop()) {
-                            auto alert = mapper->GetAlert(new std::string(topic), msg);
-                            if (alert != nullptr) {
-                                alertQueue->emplace(alert);
+                            try {
+                                auto alert = mapper->GetAlert(new std::string(topic), msg);
+                                if (alert != nullptr) {
+                                    alertQueue->emplace(alert);
+                                }
+                            }
+                            catch (std::invalid_argument*) {
+                                std::cout << "Failed to map alert of topic: " << topic << std::endl;
+                                std::cout << "Discarding message.." << std::endl;
                             }
                         }
                     }
