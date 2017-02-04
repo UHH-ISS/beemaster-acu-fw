@@ -52,8 +52,8 @@ namespace acu {
                                     alertQueue->emplace(alert);
                                 }
                             }
-                            catch (std::invalid_argument*) {
-                                std::cout << "Failed to map alert of topic: " << topic << std::endl;
+                            catch (const std::invalid_argument *ia) {
+                                std::cout << "Failed to map alert of topic: " << topic << ". reason: " << ia->what() << std::endl;
                                 std::cout << "Discarding message.." << std::endl;
                             }
                         }

@@ -119,7 +119,7 @@ TEST_CASE("Testing Receiver receive", "[receiver]") {
         auto rec = acu::Receiver(local_ip, local_port, &topics, mapper);
 
         // Receiver was created with 3 known topics, so 3 queues are registered.
-        // All 3 queue swill receive, that must result in triggering this tests callback
+        // All 3 queues will receive, that must result in triggering this tests callback
         // exactly 3 times with three different messages.
         REQUIRE(queue->size() == 0);
         auto sender = broker::endpoint("sender", broker::AUTO_ROUTING | broker::AUTO_PUBLISH);

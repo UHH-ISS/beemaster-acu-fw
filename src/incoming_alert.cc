@@ -14,23 +14,23 @@ namespace acu {
         /* The message format uses a mandatory record as the second field of the message
          * which contains 5 fields which are present in every alert. */
 
-        // Require a valid topid
+        // Require a valid topic
         if (topic == nullptr || topic->empty()) {
-            throw new std::invalid_argument("topic");
+            throw new std::invalid_argument("topic not set");
         }
 
         // Require at least one field
         if (message.size() < 2) {
-           throw new std::invalid_argument("msg");
+           throw new std::invalid_argument("msg to small");
         }
 
         // Require this field to be a broker::record with exactly 5 items
         if (!broker::is<broker::record>(message[1])) {
-            throw new std::invalid_argument("msg");
+            throw new std::invalid_argument("msg not a broker::record");
         }
         auto rec = broker::get<broker::record>(message[1]);
         if (rec->size() != 5) {
-            throw new std::invalid_argument("msg");
+            throw new std::invalid_argument("msg record too small");
         }
     }
 
