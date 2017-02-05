@@ -6,8 +6,6 @@
 
 #include "acu/incoming_alert.h"
 
-#include <iostream>
-
 namespace acu {
 
     IncomingAlert::IncomingAlert(const std::string *topic, const broker::message &msg) : topic(topic), message(msg) {
@@ -34,17 +32,14 @@ namespace acu {
         }
     }
 
-    time_point<system_clock> IncomingAlert::timestamp() {
+    time_point<system_clock> IncomingAlert::timestamp() const {
         auto rec = broker::get<broker::record>(message[1]);
         assert(broker::is<broker::time_point>(rec->get(0).get()));
-        auto val = broker::get<broker::time_point>(rec->get(0).get())->value;
-        auto dur = duration<double, std::ratio<1>>{val};
-        //TODO: I KNOW this is system_clock.time_since_epoch cast to duration<double>
-        // but I cannot figure out how to construct the time_point from this
-        // Also ideally this would return a reference but I don't think this is possible
-        // See also: https://github.com/bro/broker/blob/master/src/time_point.cc#L8
-        // and: http://en.cppreference.com/w/cpp/chrono/time_point
-        return system_clock::now();
+        auto raw_duration = broker::get<broker::time_point>(rec->get(0).get())->value;
+        auto duration = duration<double, std::ratio<1>>{raw_duration};
+        // We need to cast to a duration type with more precision so we get some slightly
+        // different values than the ones that were used to create the time_point
+        return time_point<system_clock> {duration_cast<system_clock::duration>(duration)};
     }
 
     const std::string& IncomingAlert::source_ip() const {

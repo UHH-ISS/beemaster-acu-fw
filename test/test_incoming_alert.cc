@@ -9,14 +9,15 @@
 #include <catch.hpp>
 
 #include <acu/incoming_alert.h>
-#include <iostream>
 
 using namespace broker;
 
+typedef std::chrono::duration<double> double_dur;
+
 TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
     auto time_stamp = std::chrono::system_clock::now();
-    auto val = std::chrono::duration_cast<std::chrono::duration<double>>(time_stamp.time_since_epoch());
-    auto broker_stamp = time_point{val.count()};
+    auto truncated = std::chrono::duration_cast<double_dur>(time_stamp.time_since_epoch());
+    auto broker_stamp = time_point{truncated.count()};
 
     // The (uint16_t) casts do not matter but are here for completeness
     auto topic = new std::string("some topic");
@@ -30,11 +31,12 @@ TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
     auto msg = message{"acu/test_event", rec};
     auto alert = acu::IncomingAlert(topic, msg);
 
-    // TODO: the following test is incomplete, this requires final implementation of the timestamp method.
-    // TODO: Change to plain REQUIRE when fixed.
     REQUIRE(alert.topic == topic);
     REQUIRE(*alert.topic == *topic);
-    REQUIRE_FALSE(alert.timestamp() == time_stamp);
+    // Broker uses doubles internally to transmit time_points..
+    // This loses us some precision and is the reason the following return value cannot be compared
+    // with the original time_stamp. Instead we compare with the truncated version
+    REQUIRE(std::chrono::duration_cast<double_dur>(alert.timestamp().time_since_epoch()) == truncated);
     REQUIRE(alert.source_ip() == "127.0.0.1");
     REQUIRE(alert.source_port() == 8080);
     REQUIRE(alert.destination_ip() == "192.168.0.1");

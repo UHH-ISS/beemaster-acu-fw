@@ -2,7 +2,7 @@
  * ACU Framework
  *
  * The abstract class IncomingAlert is a proxy to the incoming broker message.
- * As such, the realization lies upon the implementer, as it is to match the
+ * As such, the realization lies upon the implementor, as it is to match the
  * precise messages.
  *
  * @author: 1wilkens
@@ -29,7 +29,7 @@ namespace acu {
         const std::string *topic;
 
         // Timestamp indicating when the alert occurred
-        time_point<system_clock> timestamp();
+        time_point<system_clock> timestamp() const;
 
         // Source IP of the connection that triggered this alert
         const std::string& source_ip() const;
