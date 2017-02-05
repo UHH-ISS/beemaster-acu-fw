@@ -36,10 +36,10 @@ namespace acu {
         auto rec = broker::get<broker::record>(message[1]);
         assert(broker::is<broker::time_point>(rec->get(0).get()));
         auto raw_duration = broker::get<broker::time_point>(rec->get(0).get())->value;
-        auto duration = duration<double, std::ratio<1>>{raw_duration};
+        auto dur = duration<double, std::ratio<1>>{raw_duration};
         // We need to cast to a duration type with more precision so we get some slightly
         // different values than the ones that were used to create the time_point
-        return time_point<system_clock> {duration_cast<system_clock::duration>(duration)};
+        return time_point<system_clock> {duration_cast<system_clock::duration>(dur)};
     }
 
     const std::string& IncomingAlert::source_ip() const {
