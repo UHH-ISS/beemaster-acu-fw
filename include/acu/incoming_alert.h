@@ -15,6 +15,7 @@
 
 #include <broker/message.hh>
 #include <chrono>
+#include <iostream>
 #include <string>
 
 namespace acu {
@@ -42,6 +43,8 @@ namespace acu {
 
         virtual bool operator==(const IncomingAlert&) const;
         virtual bool operator!=(const IncomingAlert&) const;
+
+        friend std::ostream& operator<< (std::ostream &stream, const IncomingAlert &alert);
 
     protected:
         const std::vector<broker::data> message;

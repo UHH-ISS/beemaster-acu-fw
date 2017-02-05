@@ -39,4 +39,6 @@ TEST_CASE("Testing IncomingAlert", "[incoming_alert]") {
     REQUIRE(alert.source_port() == 8080);
     REQUIRE(alert.destination_ip() == "192.168.0.1");
     REQUIRE(alert.destination_port() == 9090);
+
+    std::cout << "ALERT: " << alert << std::endl;
 }

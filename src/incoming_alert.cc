@@ -79,4 +79,8 @@ namespace acu {
     bool IncomingAlert::operator!=(const IncomingAlert &rhs) const {
         return !(*this == rhs);
     }
+
+    std::ostream &operator<<(std::ostream &stream, const IncomingAlert &alert) {
+        return stream << *alert.topic << ":" + broker::to_string(alert.message);
+    }
 }
