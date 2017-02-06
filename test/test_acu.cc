@@ -40,7 +40,7 @@ class MockAggregation : public acu::Aggregation {
     public:
         MockAggregation(acu::Storage *storage, std::vector<acu::Threshold> *thresholds)
             : acu::Aggregation(storage, thresholds), invokes(0) {}
-        int16_t invokes;
+        uint16_t invokes;
 
         bool Invoke(const acu::IncomingAlert *alert) {
             // supress a warning for unused alert

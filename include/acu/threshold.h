@@ -19,7 +19,7 @@ namespace acu {
                 : count(count), field_name(field_name), value(value) {}
 
         // Count after the threshold is reached
-        int count;
+        uint64_t count;
         // Field name which should be checked for the value
         std::string field_name;
         // Value of the field which will be counted
