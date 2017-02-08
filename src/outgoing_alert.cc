@@ -9,7 +9,7 @@
 namespace acu {
 
     const std::string OutgoingAlert::EventName() const {
-        return "Beemaster::AcuMetaAlert";
+        return "Beemaster::acu_meta_alert";
     }
 
     const broker::message OutgoingAlert::ToMessage() const {
