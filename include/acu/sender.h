@@ -19,6 +19,9 @@ namespace acu {
 
     class Sender {
     public:
+        const static std::string ACU_OUTGOING_ALERT_TOPIC;
+        const static std::string ENDPOINT_NAME;
+
         Sender(std::string destination, port_t port);
         bool Send(OutgoingAlert *alert) const;
 

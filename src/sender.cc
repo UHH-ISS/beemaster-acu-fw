@@ -13,7 +13,9 @@
 
 namespace acu {
     // This could also be set via config file?
-    std::string const ENDPOINT_NAME = "acu_sender";
+    const std::string Sender::ACU_OUTGOING_ALERT_TOPIC = "acu/alert";
+    const std::string Sender::ENDPOINT_NAME = "acu_sender";
+
 
     Sender::Sender(std::string destination, port_t port) :
             endpoint(new broker::endpoint(ENDPOINT_NAME,
@@ -31,8 +33,8 @@ namespace acu {
 
             return false;
         }
-        // TODO: do we want to use the incidentName as topic?
-        endpoint->send(alert->incidentName, alert->ToMessage());
+
+        endpoint->send(ACU_OUTGOING_ALERT_TOPIC, alert->ToMessage());
         return true;
     }
 }
