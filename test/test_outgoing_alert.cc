@@ -31,6 +31,7 @@ TEST_CASE("Testing OutgoingAlert ToMessage default behavior", "[outgoing_alert]"
 
     auto msg = alert->ToMessage();
 
-    REQUIRE(msg[0].value == alert->timestamp.time_since_epoch().count());
-    REQUIRE(msg[1].value == alert->incidentName);
+    REQUIRE(msg[0].value == alert->EventName());
+    REQUIRE(msg[1].value == alert->timestamp.time_since_epoch().count());
+    REQUIRE(msg[2].value == alert->incidentName);
 }

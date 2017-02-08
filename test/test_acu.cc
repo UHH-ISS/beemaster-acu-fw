@@ -24,18 +24,6 @@ class MockStorage : public acu::Storage {
         }
 };
 
-class MockOutgoingAlert : public acu::OutgoingAlert {
-    public:
-        MockOutgoingAlert(std::string name, std::chrono::time_point<std::chrono::system_clock> timestamp)
-                : acu::OutgoingAlert(name, timestamp), toMessageCalled(false) {};
-        bool toMessageCalled;
-        const broker::message ToMessage() {
-            toMessageCalled = true;
-            return acu::OutgoingAlert::ToMessage();
-        }
-};
-
-
 class MockAggregation : public acu::Aggregation {
     public:
         MockAggregation(acu::Storage *storage, std::vector<acu::Threshold> *thresholds)
@@ -94,7 +82,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     auto mockAlertName = "META ALERT";
     auto mockAlertTime = std::chrono::system_clock::now();
     auto mockAlertTimeVal = std::chrono::duration_cast<std::chrono::duration<double>>(mockAlertTime.time_since_epoch());
-    MockOutgoingAlert *mockAlert = new MockOutgoingAlert(mockAlertName, mockAlertTime);
+    auto *mockAlert = new acu::OutgoingAlert(mockAlertName, mockAlertTime);
     MockCorrelation *corr = new MockCorrelation(storage, thresholds, mockAlert);
 
     acu->Register(topics, agg, corr);
@@ -102,7 +90,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     REQUIRE_FALSE(storage->persisted);
     REQUIRE(agg->invokes == 0);
     REQUIRE_FALSE(corr->correlated);
-    REQUIRE_FALSE(mockAlert->toMessageCalled);
 
     // remote bro-broker "mock" via localhost
     broker::endpoint meta_alert_rec("Meta Alert Receiver",
@@ -165,9 +152,6 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
 
         // The mocked aggregation triggers for correlation immediately, so our framework should invoke corr
         REQUIRE(corr->correlated);
-
-        // The mocked correlation always returns a static meta alert, so our framework should send that
-        REQUIRE(mockAlert->toMessageCalled);
 
         for (auto &msg : meta_alert_queue.want_pop()) {
             REQUIRE(msg.at(0) == mockAlertTime.time_since_epoch().count());
