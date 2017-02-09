@@ -10,7 +10,6 @@
 
 #include <acu/acu.h>
 #include <broker/message_queue.hh>
-#include <iostream>
 #include <unistd.h>
 
 class MockStorage : public acu::Storage {
@@ -73,9 +72,10 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     auto thresholds = new std::vector<acu::Threshold>();
     thresholds->push_back(thr);
 
-    auto topic = "TOPIC";
+    auto inc_topic = "TOPIC";
+    auto alert_topic = "acu/alert";
     auto topics = new std::vector<std::string>();
-    topics->push_back(topic);
+    topics->push_back(inc_topic);
 
     acu::Acu *acu = new acu::Acu(storage, mapper);
     MockAggregation *agg = new MockAggregation(storage, thresholds);
@@ -94,11 +94,13 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     // remote bro-broker "mock" via localhost
     broker::endpoint meta_alert_rec("Meta Alert Receiver",
                                     broker::AUTO_ROUTING | broker::AUTO_ADVERTISE);
-    broker::message_queue meta_alert_queue(topic, meta_alert_rec, broker::GLOBAL_SCOPE);
+    broker::message_queue meta_alert_queue(alert_topic, meta_alert_rec, broker::GLOBAL_SCOPE);
 
     acu->SetReceiverInfo("127.0.0.1", 9999);    // to make sure
     acu->SetSenderInfo("127.0.0.1", 9997);      // to prove a point ;)
     bool listening = meta_alert_rec.listen(9997, "127.0.0.1");
+    usleep(100 * 1000);
+
     REQUIRE(listening);
 
     auto inc_alert_sender = broker::endpoint("incoming alert sender",
@@ -132,13 +134,13 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
                 broker::record::field("DEST_IP"),
                 broker::record::field(1338)
         });
-        auto msg = broker::message{"acu/test_event", rec};
+        auto msg = broker::message{"acu/alert", rec};
 
         // the fake incoming alert sender must have received a peer from our receiver
         REQUIRE(inc_alert_sender.incoming_connection_status().need_pop().front().status
                 == broker::incoming_connection_status::tag::established);
 
-        inc_alert_sender.send(topic, msg);
+        inc_alert_sender.send(inc_topic, msg);
         usleep(1000*300);
 
         // Process received alerts
@@ -153,9 +155,11 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
         // The mocked aggregation triggers for correlation immediately, so our framework should invoke corr
         REQUIRE(corr->correlated);
 
-        for (auto &msg : meta_alert_queue.want_pop()) {
-            REQUIRE(msg.at(0) == mockAlertTime.time_since_epoch().count());
-            REQUIRE(msg.at(1) == mockAlertName);
+        for (auto &msg : meta_alert_queue.need_pop()) {
+            std::cout << "MetaAlert received: " << broker::to_string(msg) << std::endl;
+            REQUIRE(msg.at(0) == "Beemaster::acu_meta_alert");
+            REQUIRE(msg.at(1) == mockAlertTime.time_since_epoch().count());
+            REQUIRE(msg.at(2) == mockAlertName);
         }
     }
 }
