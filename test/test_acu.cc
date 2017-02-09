@@ -73,7 +73,7 @@ TEST_CASE("Testing ACU roundtrip dataflow", "[acu]") {
     thresholds->push_back(thr);
 
     auto inc_topic = "TOPIC";
-    auto alert_topic = "acu/alert";
+    auto alert_topic = "beemaster/acu/alert";
     auto topics = new std::vector<std::string>();
     topics->push_back(inc_topic);
 
