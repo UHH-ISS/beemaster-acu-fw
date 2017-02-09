@@ -13,6 +13,8 @@ namespace acu {
     }
 
     const broker::message OutgoingAlert::ToMessage() const {
-        return broker::message{EventName(), timestamp.time_since_epoch().count(), incidentName};
+        auto truncated = std::chrono::duration_cast<std::chrono::duration<double>>(timestamp.time_since_epoch());
+        auto broker_stamp = broker::time_point{truncated.count()};
+        return broker::message{EventName(), broker_stamp, incidentName};
     }
 }
