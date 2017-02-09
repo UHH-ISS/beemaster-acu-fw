@@ -64,15 +64,4 @@ TEST_CASE("Testing sender send functionality", "[sender]") {
             REQUIRE(msg.at(1) == alertName);
         }
     }
-
-    SECTION("Testing sending without peering") {
-        // provide invalid address...
-        acu::Sender *sender = new acu::Sender("127.0.0.1", 1234);
-
-        // do test
-        bool success = sender->Send(mockAlert);
-
-        // not sent? -> should not have been converted!
-        REQUIRE_FALSE(success);
-    }
 }
