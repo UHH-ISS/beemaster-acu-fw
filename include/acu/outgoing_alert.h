@@ -19,13 +19,21 @@ namespace acu {
 
     class OutgoingAlert {
     public:
+        /// Instantiate an OutgoingAlert.
+        ///
+        /// \param name         Name of the alert-event
+        /// \param timestamp    The point in time, this event occured
         OutgoingAlert(std::string name, time_point<system_clock> timestamp)
                 : incidentName(name), timestamp(timestamp) {};
 
+        /// The name of this incident/alert.
         std::string incidentName;
+        /// The time_point to this incident/alert.
         time_point<system_clock> timestamp;
 
+        /// \return     The name of this event.
         virtual const std::string EventName() const;
+        /// \return     The broker-message of this alert.
         virtual const broker::message ToMessage() const;
     };
 }

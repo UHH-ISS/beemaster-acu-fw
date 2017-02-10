@@ -34,6 +34,11 @@ namespace acu {
                 : address(address), port(port), topics(topics), mapper(mapper) {};
 
         // TODO: The broker message could/should be a reference to transfer ownership to the acu
+        /// Establish the connection with the outside to receive
+        /// messages into the queue.
+        ///
+        /// \param queue    The queue fill with messages.
+        ///                 The calling side can then pop those messages.
         void Peer(std::queue<IncomingAlert*>*);
 
     private:

@@ -12,6 +12,7 @@
 #include <cstdint>
 
 namespace acu {
+    /// Typedef for consistent use of port numbers
     typedef uint16_t port_t;
 }
 

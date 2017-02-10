@@ -15,11 +15,19 @@ namespace acu {
 
     class Storage {
     public:
+        /// Instantiate the storage object, used for interaction
+        /// with the underlying database.
+        ///
+        /// \param db_name      The name of the database
         Storage(std::string db_name) : db_name(db_name) {}
 
+        /// Name of the database
         std::string db_name;
         // TODO: add more DB properties
 
+        /// Persists the given alert.
+        ///
+        /// \param alert    The IncomingAlert to put into the DB
         virtual void Persist(const IncomingAlert *alert) = 0;
     };
 }

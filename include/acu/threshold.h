@@ -15,23 +15,31 @@
 namespace acu {
 
     struct Threshold {
+        /// Instantiate a Threshold.
+        ///
+        /// \param count        The count, the value must reach to trigger further computations
+        /// \param field_name   The name of the corresponding database field
+        /// \param value        The expected value of that field
         Threshold(int count, std::string field_name, std::string value)
                 : count(count), field_name(field_name), value(value) {}
 
-        // Count after the threshold is reached
+        /// Count after the threshold is reached
         uint64_t count;
-        // Field name which should be checked for the value
+        /// Field name which should be checked for the value
         std::string field_name;
-        // Value of the field which will be counted
+        /// Value of the field which will be counted
         std::string value;
 
+        /// Checks for equality
         bool operator==(const Threshold&) const;
+        /// Checks for inequality
         bool operator!=(const Threshold&) const;
     };
 } // namespace acu
 
 namespace std {
 
+    /// Provide a hash for Threshold
     template <> struct hash<acu::Threshold> {
         inline size_t operator()(const acu::Threshold &t) const {
             return hash<int>()(t.count) ^ hash<string>()(t.field_name) ^ hash<string>()(t.value);
