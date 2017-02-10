@@ -62,7 +62,7 @@ See [acu.h](include/acu/acu.h) for an example.
 
 ## Implementing a custom ACU
 
-By using this framework, implementing a custom ACU is a comfortable task. Please find two examples for custom ACUs inside the Beemaster [acu respository](https://git.informatik.uni-hamburg.de/iss/mp-ids-acu-fw). The `master` branch features a simple ACU for detecting portscans (eg a distributed portscan). On the `experimental_lattice` branch, there is more sophisticated ACU featuring a sample implementation of the lattice algorithm.
+By using this framework, implementing a custom ACU is a comfortable task. Please find two examples for custom ACUs inside the Beemaster [acu respository](https://git.informatik.uni-hamburg.de/iss/mp-ids-acu). The `master` branch features a simple ACU for detecting portscans (eg a distributed portscan). On the `experimental_lattice` branch, there is more sophisticated ACU featuring a sample implementation of the lattice algorithm.
 
 #### Example
 
