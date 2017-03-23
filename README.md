@@ -1,5 +1,5 @@
-MP-IDS ACU Framework
-====================
+Beemaster: ACU Framework
+========================
 
 Beemaster ships with a self-made general purpose framework for implementing custom alert correlation units (ACUs). Please have a look at the [architecture documentation](https://git.informatik.uni-hamburg.de/iss/mp-ids/blob/master/dokumente/dokumentation/architektur/Architektur.pdf) (German) for further reading about ACUs.
 
@@ -62,7 +62,7 @@ See [acu.h](include/acu/acu.h) for an example.
 
 ## Implementing a custom ACU
 
-By using this framework, implementing a custom ACU is a comfortable task. Please find two examples for custom ACUs inside the Beemaster [ACU respository](https://github.com/UHH-ISS/beemaster-acu-portscan). The `master` branch features a simple ACU for detecting portscans (e.g. a distributed portscan). ~~On the `experimental_lattice` branch, there is more sophisticated ACU featuring a sample implementation of the lattice algorithm.~~
+By using this framework, implementing a custom ACU is a comfortable task. Please find two examples for custom ACUs: The [ACU Portscan respository](https://github.com/UHH-ISS/beemaster-acu-portscan) features a simple ACU for detecting portscans (e.g. a distributed portscan) and the [ACU Lattice respository](https://github.com/UHH-ISS/beemaster-acu-lattice) a sample implementation of the lattice algoritm.
 
 #### Example
 
